@@ -5,7 +5,7 @@
   <header class="preview__toolbar">
     <p-button
       icon="pi pi-arrow-left"
-      label="重新上傳"
+      label="回首頁"
       severity="secondary"
       size="small"
       (onClick)="board.resetToUpload()"
@@ -18,13 +18,22 @@
         size="small"
         (onClick)="board.toggleDrawer()"
       />
-      <p-splitbutton
-        label="下載 PDF"
-        icon="pi pi-download"
-        [model]="exportItems"
-        (onClick)="download('pdf')"
-        size="small"
-      />
+      @if (isMobileDevice) {
+        <p-button
+          icon="pi pi-image"
+          label="分享 PNG"
+          size="small"
+          (onClick)="download('png')"
+        />
+      } @else {
+        <p-splitbutton
+          label="下載 PDF"
+          icon="pi pi-download"
+          [model]="exportItems"
+          (onClick)="download('pdf')"
+          size="small"
+        />
+      }
     </div>
   </header>
 

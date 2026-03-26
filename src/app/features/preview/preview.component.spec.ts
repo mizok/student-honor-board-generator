@@ -13,6 +13,8 @@ import { PreviewComponent } from './preview.component'
 describe('PreviewComponent', () => {
   let injector: EnvironmentInjector
   let component: PreviewComponent & {
+    exportItems: Array<{ label: string }>
+    widthOptions: Array<{ label: string; value: number }>
     download: (format: 'html' | 'pdf' | 'png') => Promise<void>
   }
   let onClose$: Subject<{ width: number } | undefined>
@@ -33,6 +35,7 @@ describe('PreviewComponent', () => {
     downloadHtml: vi.fn().mockResolvedValue(undefined),
     downloadPdf: vi.fn().mockResolvedValue(undefined),
     downloadPng: vi.fn().mockResolvedValue(undefined),
+    sharePng: vi.fn().mockResolvedValue(undefined),
   }
 
   const messageServiceStub = {
@@ -43,7 +46,28 @@ describe('PreviewComponent', () => {
     open: vi.fn(),
   }
 
-  beforeEach(() => {
+  function stubViewport(isMobile: boolean): void {
+    vi.stubGlobal('window', {
+      matchMedia: vi.fn(() => ({
+        matches: isMobile,
+        media: '(max-width: 768px)',
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+      navigator: {
+        maxTouchPoints: isMobile ? 5 : 0,
+        userAgent: isMobile ? 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0)',
+      },
+    })
+  }
+
+  function createComponent(isMobile = false): void {
+    stubViewport(isMobile)
+
     onClose$ = new Subject<{ width: number } | undefined>()
     dialogRefStub = {
       onClose: onClose$.asObservable(),
@@ -63,12 +87,17 @@ describe('PreviewComponent', () => {
     exportServiceStub.downloadHtml.mockClear()
     exportServiceStub.downloadPdf.mockClear()
     exportServiceStub.downloadPng.mockClear()
+    exportServiceStub.sharePng.mockClear()
     messageServiceStub.add.mockClear()
     dialogServiceStub.open.mockClear()
 
     vi.stubGlobal('document', {
       querySelector: vi.fn(() => ({}) as HTMLElement),
     })
+  }
+
+  beforeEach(() => {
+    createComponent()
   })
 
   afterEach(() => {
@@ -115,9 +144,40 @@ describe('PreviewComponent', () => {
     expect(exportServiceStub.downloadPng).not.toHaveBeenCalled()
   })
 
+  it('shares png on mobile after dialog closes with a selected width', async () => {
+    injector.destroy()
+    onClose$.unsubscribe()
+    createComponent(true)
+
+    await component.download('png')
+    boardStub.exportWidth.set(1280)
+
+    onClose$.next({ width: 1280 })
+
+    expect(boardStub.exportWidth()).toBe(1280)
+    expect(exportServiceStub.sharePng).toHaveBeenCalledWith(expect.anything(), 1280)
+    expect(exportServiceStub.downloadPng).not.toHaveBeenCalled()
+  })
+
   it('does not bind a drawer-open layout class on the preview root', () => {
     const template = readFileSync(resolve(__dirname, './preview.component.html'), 'utf8')
 
     expect(template).not.toContain('[class.preview--drawer-open]')
+  })
+
+  it('does not include the unstable 800 width option', () => {
+    expect(component.widthOptions.map(option => option.value)).toEqual([1024, 1280, 1920])
+  })
+
+  it('keeps pdf, png, and html export options on desktop', () => {
+    expect(component.exportItems.map(item => item.label)).toEqual(['下載 PDF', '下載 PNG', '下載 HTML'])
+  })
+
+  it('only exposes png export on mobile', () => {
+    injector.destroy()
+    onClose$.unsubscribe()
+    createComponent(true)
+
+    expect(component.exportItems.map(item => item.label)).toEqual(['下載 PNG'])
   })
 })

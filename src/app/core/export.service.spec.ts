@@ -33,6 +33,8 @@ describe('ExportService', () => {
   let injector: EnvironmentInjector
 
   const anchorStub = { href: '', download: '', click: vi.fn() }
+  const navigatorShareMock = vi.fn()
+  const navigatorCanShareMock = vi.fn()
   const offscreenContainer = {
     style: { cssText: '' },
     appendChild: vi.fn(),
@@ -49,6 +51,7 @@ describe('ExportService', () => {
     height: 0,
     getContext: vi.fn(() => exportCanvasContextStub),
     toDataURL: vi.fn(() => 'data:image/png;base64,resized'),
+    toBlob: vi.fn(),
   }
   const canvasStub = {
     toDataURL: vi.fn(() => 'data:image/png;base64,abc'),
@@ -68,8 +71,14 @@ describe('ExportService', () => {
     jsPdfAddImageMock.mockReset()
     jsPdfSaveMock.mockReset()
     jsPdfCtorMock.mockClear()
+    navigatorShareMock.mockReset()
+    navigatorShareMock.mockResolvedValue(undefined)
+    navigatorCanShareMock.mockReset()
+    navigatorCanShareMock.mockReturnValue(false)
 
     anchorStub.click = vi.fn()
+    anchorStub.href = ''
+    anchorStub.download = ''
     offscreenContainer.appendChild.mockReset()
     bodyStub.appendChild.mockReset()
     bodyStub.removeChild.mockReset()
@@ -78,10 +87,25 @@ describe('ExportService', () => {
     exportCanvasStub.height = 0
     exportCanvasStub.getContext.mockClear()
     exportCanvasStub.toDataURL.mockClear()
+    exportCanvasStub.toBlob.mockImplementation((callback: BlobCallback) => {
+      callback(new Blob(['png'], { type: 'image/png' }))
+    })
 
     vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
       cb(0)
       return 1
+    })
+    vi.stubGlobal('navigator', {
+      share: navigatorShareMock,
+      canShare: navigatorCanShareMock,
+    })
+    vi.stubGlobal('File', class MockFile extends Blob {
+      readonly name: string
+
+      constructor(parts: BlobPart[], name: string, options?: FilePropertyBag) {
+        super(parts, options)
+        this.name = name
+      }
     })
     vi.stubGlobal('getComputedStyle', vi.fn(() => computedStyleStub))
     vi.stubGlobal('document', {
@@ -95,6 +119,7 @@ describe('ExportService', () => {
         return null
       }),
     })
+    vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:mock'), revokeObjectURL: vi.fn() })
   })
 
   afterEach(() => {
@@ -162,7 +187,7 @@ describe('ExportService', () => {
     expect(exportCanvasStub.width).toBe(1024)
     expect(exportCanvasStub.height).toBe(768)
     expect(exportCanvasContextStub.drawImage).toHaveBeenCalled()
-    expect(exportCanvasStub.toDataURL).toHaveBeenCalledWith('image/png')
+    expect(exportCanvasStub.toBlob).toHaveBeenCalled()
   })
 
   it('downloadPdf keeps PDF page size in CSS pixels when canvas is 2x', async () => {
@@ -197,11 +222,61 @@ describe('ExportService', () => {
 
   it('downloadHtml triggers anchor click', async () => {
     const el = { outerHTML: '<div></div>' } as HTMLElement
-    vi.stubGlobal('URL', { createObjectURL: vi.fn(() => 'blob:mock'), revokeObjectURL: vi.fn() })
     vi.stubGlobal('Blob', class { constructor() {} })
 
     await service.downloadHtml(el)
 
+    expect(anchorStub.click).toHaveBeenCalled()
+  })
+
+  it('sharePng uses the Web Share API when file sharing is supported', async () => {
+    navigatorCanShareMock.mockReturnValue(true)
+
+    const clone = {
+      style: {
+        width: '',
+        maxWidth: '',
+        setProperty: vi.fn(),
+      },
+    }
+    const element = {
+      cloneNode: vi.fn(() => clone),
+    } as unknown as HTMLElement
+
+    await service.sharePng(element, 1024)
+
+    expect(navigatorCanShareMock).toHaveBeenCalledWith({
+      files: expect.any(Array),
+    })
+    expect(navigatorShareMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        files: expect.arrayContaining([
+          expect.objectContaining({ name: 'honor-board.png', type: 'image/png' }),
+        ]),
+      }),
+    )
+    expect(anchorStub.click).not.toHaveBeenCalled()
+  })
+
+  it('sharePng falls back to file download when file sharing is unavailable', async () => {
+    navigatorCanShareMock.mockReturnValue(false)
+
+    const clone = {
+      style: {
+        width: '',
+        maxWidth: '',
+        setProperty: vi.fn(),
+      },
+    }
+    const element = {
+      cloneNode: vi.fn(() => clone),
+    } as unknown as HTMLElement
+
+    await service.sharePng(element, 1024)
+
+    expect(navigatorShareMock).not.toHaveBeenCalled()
+    expect(anchorStub.href).toBe('blob:mock')
+    expect(anchorStub.download).toBe('honor-board.png')
     expect(anchorStub.click).toHaveBeenCalled()
   })
 

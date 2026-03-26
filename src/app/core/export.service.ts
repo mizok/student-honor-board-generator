@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core'
 
 @Injectable({ providedIn: 'root' })
 export class ExportService {
+  private readonly pngFileName = 'honor-board.png'
+
   private isCreatePatternZeroCanvasError(error: unknown): boolean {
     return error instanceof DOMException &&
       error.name === 'InvalidStateError' &&
@@ -85,6 +87,39 @@ export class ExportService {
     return normalizedCanvas
   }
 
+  private canvasToBlob(canvas: HTMLCanvasElement, type: string): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(blob => {
+        if (blob) {
+          resolve(blob)
+          return
+        }
+
+        reject(new Error('無法建立匯出圖片'))
+      }, type)
+    })
+  }
+
+  private async createPngBlob(element: HTMLElement, width: number): Promise<Blob> {
+    await document.fonts.ready
+    const { clone, cleanup } = await this.cloneOffscreen(element, width)
+
+    try {
+      const canvas = await this.captureCanvas(clone, width)
+      const normalizedCanvas = this.normalizePngCanvas(canvas, width)
+      return this.canvasToBlob(normalizedCanvas, 'image/png')
+    } finally {
+      cleanup()
+    }
+  }
+
+  private canShareFiles(file: File): boolean {
+    if (typeof navigator === 'undefined' || typeof navigator.share !== 'function') return false
+    if (typeof navigator.canShare !== 'function') return false
+
+    return navigator.canShare({ files: [file] })
+  }
+
   private async cloneOffscreen(
     element: HTMLElement,
     width: number,
@@ -109,16 +144,27 @@ export class ExportService {
   }
 
   async downloadPng(element: HTMLElement, width: number): Promise<void> {
-    await document.fonts.ready
-    const { clone, cleanup } = await this.cloneOffscreen(element, width)
+    const blob = await this.createPngBlob(element, width)
+    this.triggerBlobDownload(blob, this.pngFileName)
+  }
 
-    try {
-      const canvas = await this.captureCanvas(clone, width)
-      const normalizedCanvas = this.normalizePngCanvas(canvas, width)
-      this.triggerDownload(normalizedCanvas.toDataURL('image/png'), 'honor-board.png')
-    } finally {
-      cleanup()
+  async sharePng(element: HTMLElement, width: number): Promise<void> {
+    const blob = await this.createPngBlob(element, width)
+    const file = new File([blob], this.pngFileName, { type: 'image/png' })
+
+    if (this.canShareFiles(file)) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: '榮譽榜圖片',
+        })
+        return
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return
+      }
     }
+
+    this.triggerBlobDownload(blob, this.pngFileName)
   }
 
   async downloadPdf(element: HTMLElement, width: number): Promise<void> {
@@ -163,14 +209,20 @@ export class ExportService {
 </html>`
 
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
-    this.triggerDownload(URL.createObjectURL(blob), 'honor-board.html')
+    this.triggerBlobDownload(blob, 'honor-board.html')
   }
 
-  private triggerDownload(href: string, filename: string): void {
+  private triggerBlobDownload(blob: Blob, filename: string): void {
+    this.triggerDownload(URL.createObjectURL(blob), filename, true)
+  }
+
+  private triggerDownload(href: string, filename: string, revokeObjectUrl = false): void {
     const a = document.createElement('a')
     a.href = href
     a.download = filename
     a.click()
-    setTimeout(() => URL.revokeObjectURL(href), 1000)
+    if (revokeObjectUrl) {
+      setTimeout(() => URL.revokeObjectURL(href), 1000)
+    }
   }
 }
