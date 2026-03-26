@@ -1,0 +1,10 @@
+{
+  "name": "@honor/worker",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "wrangler dev --port 8787",
+    "build": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy"
+  }
+}
