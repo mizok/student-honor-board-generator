@@ -38,11 +38,11 @@ Template ID   : <kebab-case>
 
 ---
 
-## Phase 1 — Schema（`packages/shared-types`）
+## Phase 1 — Schema（`src/app/core/templates`）
 
 ### 1-A 建立 schema 檔
 
-路徑：`packages/shared-types/src/templates/<id>/schema.ts`
+路徑：`src/app/core/templates/<id>/schema.ts`
 
 規則：
 - 頂層物件**必須**包含 `title: z.string()` 和 `subtitle: z.string().default('')`
@@ -68,18 +68,18 @@ export type <Camel>Item = z.infer<typeof <camel>ItemSchema>
 export type <Camel>Data = z.infer<typeof <camel>Schema>
 ```
 
-### 1-B 更新 `packages/shared-types/src/index.ts`
+### 1-B 更新 `src/app/core/templates/index.ts`
 
 在最後加一行：
 ```ts
-export * from './templates/<id>/schema'
+export * from './<id>/schema'
 ```
 
 ---
 
-## Phase 2 — CSV 範本與解析（`packages/shared-types`）
+## Phase 2 — CSV 範本與解析（`src/app/core/templates`）
 
-路徑：`packages/shared-types/src/templates/<id>/parseCsv.ts`
+路徑：`src/app/core/templates/<id>/parseCsv.ts`
 
 ### 2-A CSV 格式設計原則
 - 前兩列固定為 metadata：
@@ -123,9 +123,9 @@ export function parse<Camel>Csv(rows: string[][]): <Camel>Data {
 
 ---
 
-## Phase 3 — 註冊至 Registry（`packages/shared-types`）
+## Phase 3 — 註冊至 Registry（`src/app/core/templates`）
 
-路徑：`packages/shared-types/src/templates/registry.ts`
+路徑：`src/app/core/templates/registry.ts`
 
 ### 3-A import 新 template
 ```ts
@@ -156,9 +156,9 @@ import { <camel>CsvTemplate, parse<Camel>Csv } from './<id>/parseCsv'
 
 ---
 
-## Phase 4 — Angular Board Component（`apps/web`）
+## Phase 4 — Angular Board Component（`src/app/templates`）
 
-路徑：`apps/web/src/app/templates/<id>/`
+路徑：`src/app/templates/<id>/`
 
 ### 4-A TypeScript（`<id>-board.component.ts`）
 
@@ -208,7 +208,7 @@ HTML 風格參考 `exam-result`（卡片格狀）或 `class-ranking`（名次分
 
 ## Phase 5 — 接入 Template Outlet
 
-路徑：`apps/web/src/app/templates/template-outlet.component.ts`
+路徑：`src/app/templates/template-outlet.component.ts`
 
 ### 5-A import
 ```ts
@@ -229,7 +229,7 @@ import { <Camel>BoardComponent } from './<id>/<id>-board.component'
 
 ## Phase 6 — Edit Drawer 支援
 
-路徑：`apps/web/src/app/features/preview/edit-drawer/`
+路徑：`src/app/features/preview/edit-drawer/`
 
 ### 6-A `edit-drawer.component.ts`
 
@@ -301,7 +301,7 @@ import { <Camel>BoardComponent } from './<id>/<id>-board.component'
 - [ ] Template outlet：import 正確；switch case 已加入
 - [ ] Edit drawer：三個方法（`saveEdit`、`deleteEntry`、`addEntry`）都有處理新 template；HTML 有對應 section
 
-全部打勾後，告知使用者：**「新 template 已完成，可執行 `nx serve web` 確認。」**
+全部打勾後，告知使用者：**「新 template 已完成，可執行 `npm run dev` 確認。」**
 
 ---
 
@@ -309,21 +309,20 @@ import { <Camel>BoardComponent } from './<id>/<id>-board.component'
 
 | 用途 | 路徑 |
 |------|------|
-| Schema | `packages/shared-types/src/templates/<id>/schema.ts` |
-| CSV 解析 | `packages/shared-types/src/templates/<id>/parseCsv.ts` |
-| Registry | `packages/shared-types/src/templates/registry.ts` |
-| Shared index | `packages/shared-types/src/index.ts` |
-| Board TS | `apps/web/src/app/templates/<id>/<id>-board.component.ts` |
-| Board HTML | `apps/web/src/app/templates/<id>/<id>-board.component.html` |
-| Board SCSS | `apps/web/src/app/templates/<id>/<id>-board.component.scss` |
-| Template outlet | `apps/web/src/app/templates/template-outlet.component.ts` |
-| Edit drawer TS | `apps/web/src/app/features/preview/edit-drawer/edit-drawer.component.ts` |
-| Edit drawer HTML | `apps/web/src/app/features/preview/edit-drawer/edit-drawer.component.html` |
+| Schema | `src/app/core/templates/<id>/schema.ts` |
+| CSV 解析 | `src/app/core/templates/<id>/parseCsv.ts` |
+| Registry | `src/app/core/templates/registry.ts` |
+| Shared index | `src/app/core/templates/index.ts` |
+| Board TS | `src/app/templates/<id>/<id>-board.component.ts` |
+| Board HTML | `src/app/templates/<id>/<id>-board.component.html` |
+| Board SCSS | `src/app/templates/<id>/<id>-board.component.scss` |
+| Template outlet | `src/app/templates/template-outlet.component.ts` |
+| Edit drawer TS | `src/app/features/preview/edit-drawer/edit-drawer.component.ts` |
+| Edit drawer HTML | `src/app/features/preview/edit-drawer/edit-drawer.component.html` |
 
 ## 附錄 B — 重要設計約束
 
-1. **不使用 LLM 解析** — worker 端只做直接 CSV 解析，不呼叫任何 AI API
+1. **不使用 LLM 解析** — 所有解析在瀏覽器端完成，不呼叫任何 AI API
 2. **欄數由外部控制** — board component 不寫死 grid 欄數，全靠 `columns` input + `[ngStyle]`
 3. **parseCsv 同時相容 CSV 和 xlsx 輸入** — xlsx 的 header cell 會附帶 hint（`科目\n如：英文`），用 `key.startsWith('<label>')` 跳過
-4. **所有 Zod schema 皆在 shared-types 定義** — worker 和 web 共用，不重複定義
-5. **Angular 21 Zoneless** — 使用 Signals（`input()`、`computed()`、`signal()`），勿使用 `ngOnChanges` 或 `@Input()` decorator
+4. **Angular 21 Zoneless** — 使用 Signals（`input()`、`computed()`、`signal()`），勿使用 `ngOnChanges` 或 `@Input()` decorator

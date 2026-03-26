@@ -82,6 +82,20 @@
         </div>
       }
 
+      <!-- 分隔線 -->
+      <div class="upload-card__divider">
+        <span class="upload-card__divider-text">或</span>
+      </div>
+
+      <!-- 使用預設資料 -->
+      <p-button
+        label="直接使用範例資料開始編輯"
+        severity="secondary"
+        icon="pi pi-play"
+        (onClick)="useDefault()"
+        styleClass="upload-card__default-btn"
+      />
+
       <!-- 下載範本 -->
       <p-button
         label="下載填寫範本"

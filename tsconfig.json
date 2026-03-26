@@ -16,7 +16,12 @@
     "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
-      "@honor/shared-types": ["packages/shared-types/src/index.ts"]
+      "@honor/shared-types": ["src/app/core/templates/index.ts"]
     }
-  }
+  },
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.spec.json" }
+  ]
 }

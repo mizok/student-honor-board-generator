@@ -46,6 +46,14 @@ export class BoardService {
     }
   }
 
+  loadDefault(templateId: string): void {
+    const template = TEMPLATE_REGISTRY[templateId]
+    if (!template) return
+    this.templateId.set(templateId)
+    this.parsedData.set(template.defaultData as ExamResultData | ClassRankingData)
+    this.uiState.set('preview')
+  }
+
   resetToUpload(): void {
     this.uiState.set('upload')
     this.parsedData.set(null)

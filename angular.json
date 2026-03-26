@@ -7,29 +7,25 @@
     "web": {
       "projectType": "application",
       "schematics": { "@schematics/angular:component": { "style": "scss" } },
-      "root": "apps/web",
-      "sourceRoot": "apps/web/src",
+      "root": "",
+      "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/apps/web",
-            "browser": "apps/web/src/main.ts",
-            "tsConfig": "apps/web/tsconfig.app.json",
+            "outputPath": "dist",
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [{ "glob": "**/*", "input": "apps/web/public" }],
+            "assets": [{ "glob": "**/*", "input": "public" }],
             "styles": [
               "node_modules/primeicons/primeicons.css",
-              "apps/web/src/styles.scss"
+              "src/styles.scss"
             ]
           },
           "configurations": {
             "production": {
-              "fileReplacements": [{
-                "replace": "apps/web/src/environments/environment.ts",
-                "with": "apps/web/src/environments/environment.production.ts"
-              }],
               "outputHashing": "all"
             },
             "development": { "optimization": false, "sourceMap": true }
@@ -45,8 +41,8 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@nx/angular:vitest",
-          "options": { "tsConfig": "apps/web/tsconfig.spec.json" }
+          "builder": "@angular/build:unit-test",
+          "options": { "tsConfig": "tsconfig.spec.json" }
         }
       }
     }

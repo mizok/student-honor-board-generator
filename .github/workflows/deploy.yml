@@ -27,11 +27,11 @@ jobs:
 
       - run: npm ci
 
-      - run: npx nx build web --base-href /student-honor-board-generator/
+      - run: npm run build -- --base-href /student-honor-board-generator/
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/apps/web/browser
+          path: dist/browser
 
   deploy:
     needs: build

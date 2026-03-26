@@ -82,6 +82,10 @@ export class UploadComponent {
     this.board.errorMessage.set(null)
   }
 
+  protected useDefault(): void {
+    this.board.loadDefault(this.selectedTemplateId())
+  }
+
   protected async onSubmit(): Promise<void> {
     const file = this.pendingFile()
     if (!file) return
