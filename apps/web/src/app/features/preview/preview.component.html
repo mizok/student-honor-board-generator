@@ -1,0 +1,43 @@
+<p-toast />
+
+<div class="preview" [class.preview--drawer-open]="board.drawerOpen()">
+  <!-- Toolbar -->
+  <header class="preview__toolbar">
+    <p-button
+      icon="pi pi-arrow-left"
+      label="重新上傳"
+      severity="secondary"
+      size="small"
+      (onClick)="board.resetToUpload()"
+    />
+    <div class="preview__toolbar-actions">
+      <p-button
+        icon="pi pi-pencil"
+        label="編輯內容"
+        severity="secondary"
+        size="small"
+        (onClick)="board.toggleDrawer()"
+      />
+      <p-splitbutton
+        label="下載 PDF"
+        icon="pi pi-download"
+        [model]="exportItems"
+        (onClick)="download('pdf')"
+        size="small"
+      />
+    </div>
+  </header>
+
+  <!-- Board canvas -->
+  <main class="preview__canvas" id="board-preview-target">
+    @if (board.parsedData(); as data) {
+      <app-template-outlet
+        [templateId]="board.templateId()"
+        [data]="data"
+      />
+    }
+  </main>
+
+  <!-- Edit drawer -->
+  <app-edit-drawer />
+</div>

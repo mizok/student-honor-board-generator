@@ -1,0 +1,42 @@
+.preview {
+  display: grid;
+  grid-template-rows: 52px 1fr;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns 0.3s ease;
+
+  &--drawer-open {
+    grid-template-columns: 1fr 360px;
+  }
+
+  &__toolbar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    background: rgba(252, 248, 241, 0.92);
+    border-bottom: 1px solid rgba(132, 101, 62, 0.16);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(68, 49, 27, 0.06);
+  }
+
+  &__toolbar-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  &__canvas {
+    overflow-y: auto;
+    padding: 32px 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: linear-gradient(180deg, #f7f2ea 0%, #efe6d9 100%);
+    min-height: 0;
+  }
+}
