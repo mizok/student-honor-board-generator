@@ -1,7 +1,7 @@
 @use 'sass:math';
 
 /// Mobile baseline viewport width
-$vw-context: (375 * 0.01) * 1px; // = 3.75px
+$vw-context: (1024 * 0.01) * 1px; // = 10.24px
 
 /// Responsive width utility.
 /// --use-rem: 0 (default) → vw, scales with viewport
@@ -10,8 +10,5 @@ $vw-context: (375 * 0.01) * 1px; // = 3.75px
   @if unit($target) != 'px' {
     @error "rw($target) 不能接受px以外的數值單位, 也不能接受用css3 變數作為值";
   }
-  @return calc(
-    #{math.div($target, $vw-context)} * 1rem * var(--use-rem) +
-    #{math.div($target, $vw-context)} * 1vw * (1 - var(--use-rem))
-  );
+  @return calc(#{math.div($target, $vw-context)} * var(--container-width));
 }

@@ -8,6 +8,14 @@ import type { ExamResultData, ClassRankingData } from '@core/templates';
   selector: 'app-template-outlet',
   standalone: true,
   imports: [CommonModule, ExamResultBoardComponent, ClassRankingBoardComponent],
+  styles: [
+    `
+      :host {
+        display: block;
+        width: 100%;
+      }
+    `,
+  ],
   template: `
     @switch (templateId()) {
       @case ('exam-result') {

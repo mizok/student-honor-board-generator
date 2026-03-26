@@ -1,7 +1,20 @@
 @use '../../../styles/responsive' as *;
 
+:host {
+  --container-width: 1vw;
+}
+
+:host(.board--fixed) {
+  font-size: 10.24px;
+  --container-width: 1rem;
+
+  .board {
+    min-width: 1024px;
+  }
+}
+
 .board {
-  width: min(rw(1400px), 100%);
+  width: 100%;
   margin: 0 auto;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.82));
   border: rw(1px) solid rgba(101, 75, 43, 0.18);
@@ -9,7 +22,7 @@
   position: relative;
   overflow: hidden;
 
-  // Decorative double border — mirrors the original HTML template
+  // Decorative double border
   &::before,
   &::after {
     content: '';
@@ -60,7 +73,7 @@
   &__subtitle {
     margin: rw(14px) 0 0;
     color: #9a7c52;
-    font-size: clamp(rw(16px), 2vw, rw(24px));
+    font-size: rw(20px);
     letter-spacing: 0.22em;
   }
 
@@ -83,7 +96,7 @@
   }
 
   &__section-badge {
-    min-width: 2rw (60px);
+    min-width: rw(260px);
     padding: rw(12px) rw(28px);
     text-align: center;
     font-size: rw(26px);
@@ -131,16 +144,12 @@
   }
 }
 
-:host {
-  --use-rem: 0;
-}
-
 // --- Card ---
 .card {
   background: rgba(255, 255, 255, 0.62);
   border: rw(1px) solid rgba(132, 101, 62, 0.14);
   box-shadow: 0 rw(10px) rw(24px) rgba(65, 48, 26, 0.05);
-  min-height: 2rw (00px);
+  min-height: rw(200px);
 
   &__head {
     padding: rw(12px) rw(16px);
@@ -186,7 +195,7 @@
     font-size: rw(15px);
     font-weight: 700;
     letter-spacing: 0.04em;
-    border-radius: 9rw (99px);
+    border-radius: 999px;
     color: #fff;
     background: linear-gradient(180deg, #b89a67, #99794a);
     flex-shrink: 0;

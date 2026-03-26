@@ -5,7 +5,8 @@
   align-items: center;
   justify-content: center;
   padding: 48px 16px;
-  background: radial-gradient(ellipse at top, rgba(255, 255, 255, 0.6), transparent 60%),
+  background:
+    radial-gradient(ellipse at top, rgba(255, 255, 255, 0.6), transparent 60%),
     linear-gradient(180deg, #f7f2ea 0%, #ede5d6 100%);
 
   &__border {
@@ -26,7 +27,7 @@
   &__inner {
     position: relative;
     z-index: 1;
-    width: min(480px, 100%);
+    width: max(480px, 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
