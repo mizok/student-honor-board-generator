@@ -125,64 +125,76 @@
   }
 }
 
-:host(:not(.board--fixed)) {
-  @media (max-width: 768px) {
-    .board {
-      &__inner {
-        padding: rw(20px) rw(16px) rw(28px);
-      }
+:host {
+  --use-rem: 0;
+}
 
-      &__header {
-        margin-bottom: rw(24px);
-      }
+:host(.board--fixed) {
+  // 1rem = 3.75px → rw(Xpx) = (X/3.75)rem = Xpx，完全固定不隨 viewport 縮放
+  font-size: 3.75px;
+  --use-rem: 1;
 
-      &__header-bracket {
-        font-size: rw(12px);
-        margin-bottom: rw(8px);
-      }
+  .board {
+    width: 1280px;
+  }
+}
 
-      &__title {
-        font-size: rw(26px);
-      }
-
-      &__subtitle {
-        font-size: rw(13px);
-        margin: rw(8px) 0 0;
-      }
-
-      &__grid {
-        gap: rw(8px);
-        grid-template-columns: repeat(auto-fill, minmax(rw(120px), 1fr));
-      }
+@media (max-width: 768px) {
+  .board {
+    &__inner {
+      padding: rw(20px) rw(16px) rw(28px);
     }
 
-    .card {
-      padding: rw(10px) rw(8px) rw(12px);
-      gap: rw(3px);
+    &__header {
+      margin-bottom: rw(24px);
+    }
 
-      &__tag {
-        font-size: rw(10px);
-        padding: rw(2px) rw(6px);
-      }
+    &__header-bracket {
+      font-size: rw(12px);
+      margin-bottom: rw(8px);
+    }
 
-      &__school {
-        font-size: rw(11px);
-        margin-top: rw(3px);
-      }
+    &__title {
+      font-size: rw(26px);
+    }
 
-      &__name {
-        font-size: rw(24px);
-        margin: rw(4px) 0 rw(2px);
-      }
+    &__subtitle {
+      font-size: rw(13px);
+      margin: rw(8px) 0 0;
+    }
 
-      &__divider {
-        width: rw(20px);
-        margin: rw(3px) auto;
-      }
+    &__grid {
+      gap: rw(8px);
+      grid-template-columns: repeat(auto-fill, minmax(rw(120px), 1fr));
+    }
+  }
 
-      &__description {
-        font-size: rw(11px);
-      }
+  .card {
+    padding: rw(10px) rw(8px) rw(12px);
+    gap: rw(3px);
+
+    &__tag {
+      font-size: rw(10px);
+      padding: rw(2px) rw(6px);
+    }
+
+    &__school {
+      font-size: rw(11px);
+      margin-top: rw(3px);
+    }
+
+    &__name {
+      font-size: rw(24px);
+      margin: rw(4px) 0 rw(2px);
+    }
+
+    &__divider {
+      width: rw(20px);
+      margin: rw(3px) auto;
+    }
+
+    &__description {
+      font-size: rw(11px);
     }
   }
 }

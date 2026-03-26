@@ -145,101 +145,112 @@
   }
 }
 
-:host(:not(.board--fixed)) {
-  @media (max-width: 768px) {
-    .board {
-      &::before {
-        inset: rw(10px);
-      }
-      &::after {
-        inset: rw(16px);
-      }
+:host {
+  --use-rem: 0;
+}
 
-      &__inner {
-        padding: rw(36px) rw(20px) rw(40px);
-      }
+:host(.board--fixed) {
+  font-size: 3.75px;
+  --use-rem: 1;
 
-      &__hero {
-        margin-bottom: rw(20px);
-      }
+  .board {
+    width: 1400px;
+  }
+}
 
-      &__eyebrow {
-        font-size: rw(13px);
-        margin: 0 0 rw(8px);
-      }
+@media (max-width: 768px) {
+  .board {
+    &::before {
+      inset: rw(10px);
+    }
+    &::after {
+      inset: rw(16px);
+    }
 
-      &__title {
-        font-size: rw(30px);
-      }
+    &__inner {
+      padding: rw(36px) rw(20px) rw(40px);
+    }
 
-      &__subtitle {
-        font-size: rw(14px);
-        margin: rw(10px) 0 0;
-      }
+    &__hero {
+      margin-bottom: rw(20px);
+    }
 
-      &__section {
-        margin-top: rw(28px);
-      }
+    &__eyebrow {
+      font-size: rw(13px);
+      margin: 0 0 rw(8px);
+    }
 
-      &__section-header {
-        gap: rw(12px);
-        margin-bottom: rw(10px);
-      }
+    &__title {
+      font-size: rw(30px);
+    }
 
-      &__section-badge {
-        min-width: rw(180px);
-        font-size: rw(18px);
-        padding: rw(8px) rw(16px);
-      }
+    &__subtitle {
+      font-size: rw(14px);
+      margin: rw(10px) 0 0;
+    }
 
-      &__section-subtitle {
-        font-size: rw(13px);
-        margin: 0 0 rw(16px);
-      }
+    &__section {
+      margin-top: rw(28px);
+    }
 
-      &__cards {
-        gap: rw(10px);
+    &__section-header {
+      gap: rw(12px);
+      margin-bottom: rw(10px);
+    }
 
-        &--school,
-        &--class {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
+    &__section-badge {
+      min-width: rw(180px);
+      font-size: rw(18px);
+      padding: rw(8px) rw(16px);
+    }
 
-      &__footer {
-        font-size: rw(13px);
-        margin-top: rw(28px);
+    &__section-subtitle {
+      font-size: rw(13px);
+      margin: 0 0 rw(16px);
+    }
+
+    &__cards {
+      gap: rw(10px);
+
+      &--school,
+      &--class {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    .card {
-      min-height: rw(160px);
+    &__footer {
+      font-size: rw(13px);
+      margin-top: rw(28px);
+    }
+  }
 
-      &__head {
-        font-size: rw(17px);
-        padding: rw(8px) rw(12px);
-      }
+  .card {
+    min-height: rw(160px);
 
-      &__body {
-        padding: rw(10px);
-        gap: rw(8px);
-      }
+    &__head {
+      font-size: rw(17px);
+      padding: rw(8px) rw(12px);
+    }
 
-      &__entry {
-        padding: rw(7px) rw(10px);
-        gap: rw(8px);
-        min-height: rw(44px);
-      }
+    &__body {
+      padding: rw(10px);
+      gap: rw(8px);
+    }
 
-      &__class {
-        min-width: rw(46px);
-        font-size: rw(13px);
-        padding: rw(3px) rw(6px);
-      }
+    &__entry {
+      padding: rw(7px) rw(10px);
+      gap: rw(8px);
+      min-height: rw(44px);
+    }
 
-      &__name {
-        font-size: rw(20px);
-      }
+    &__class {
+      min-width: rw(46px);
+      font-size: rw(13px);
+      padding: rw(3px) rw(6px);
+    }
+
+    &__name {
+      font-size: rw(20px);
     }
   }
 }

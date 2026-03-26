@@ -1,10 +1,17 @@
 @use 'sass:math';
 
-/// Design width for mobile (375px iPhone baseline)
+/// Mobile baseline viewport width
 $vw-context: (375 * 0.01) * 1px; // = 3.75px
 
-/// Convert a pixel value to vw relative to 375px viewport
-/// Usage: rw(16px) → 4.267vw  (= 16px at 375px wide)
+/// Responsive width utility.
+/// --use-rem: 0 (default) → vw, scales with viewport
+/// --use-rem: 1           → rem, fixed when :host has font-size: 3.75px
 @function rw($target) {
-  @return math.div($target, $vw-context) * 1vw;
+  @if unit($target) != 'px' {
+    @error "rw($target) 不能接受px以外的數值單位, 也不能接受用css3 變數作為值";
+  }
+  @return calc(
+    #{math.div($target, $vw-context)} * 1rem * var(--use-rem) +
+    #{math.div($target, $vw-context)} * 1vw * (1 - var(--use-rem))
+  );
 }
