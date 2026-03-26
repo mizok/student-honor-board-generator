@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx'
-import type { TemplateDefinition } from '@honor/shared-types'
+import type { TemplateDefinition } from './templates'
 
 const COLOR = {
   instruction: 'D9E1F2', // 淡藍

@@ -14,10 +14,7 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "baseUrl": ".",
-    "paths": {
-      "@honor/shared-types": ["src/app/core/templates/index.ts"]
-    }
+    "baseUrl": "."
   },
   "files": [],
   "references": [

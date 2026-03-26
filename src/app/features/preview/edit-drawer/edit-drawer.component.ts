@@ -15,7 +15,7 @@ import type {
   ClassRankingData,
   ExamResultStudent,
   RankingEntry,
-} from '@honor/shared-types';
+} from '../../../core/templates';
 
 @Component({
   selector: 'app-edit-drawer',

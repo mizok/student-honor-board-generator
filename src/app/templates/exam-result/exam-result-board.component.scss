@@ -1,31 +1,31 @@
 @use '../../../styles/responsive' as *;
 
 .board {
-  width: min(1280px, 100%);
+  width: min(rw(1280px), 100%);
   margin: 0 auto;
   background: var(--paper);
-  border: 1px solid rgba(101, 75, 43, 0.18);
-  box-shadow: 0 18px 42px rgba(68, 49, 27, 0.08);
+  border: rw(1px) solid rgba(101, 75, 43, 0.18);
+  box-shadow: 0 rw(18px) rw(42px) rgba(68, 49, 27, 0.08);
 
   &__inner {
-    padding: 48px 48px 56px;
+    padding: rw(48px) rw(48px) rw(56px);
   }
 
   &__header {
-    margin-bottom: 40px;
+    margin-bottom: rw(40px);
   }
 
   &__header-bracket {
-    font-size: 14px;
+    font-size: rw(14px);
     color: var(--muted);
     letter-spacing: 0.22em;
-    margin-bottom: 10px;
+    margin-bottom: rw(10px);
   }
 
   &__title {
     margin: 0;
     font-family: var(--font-serif);
-    font-size: clamp(28px, 3.5vw, 48px);
+    font-size: rw(24px);
     font-weight: 700;
     letter-spacing: 0.06em;
     color: var(--ink);
@@ -33,46 +33,46 @@
   }
 
   &__subtitle {
-    margin: 10px 0 0;
+    margin: rw(10px) 0 0;
     color: var(--muted);
-    font-size: 15px;
+    font-size: rw(15px);
     letter-spacing: 0.12em;
     line-height: 1.8;
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(1rw (48px), 1fr));
+    gap: rw(12px);
   }
 }
 
 .card {
   background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(101, 75, 43, 0.12);
-  padding: 14px 12px 16px;
+  border: rw(1px) solid rgba(101, 75, 43, 0.12);
+  padding: rw(14px) rw(12px) rw(16px);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: rw(4px);
   transition:
     box-shadow 0.15s,
     background 0.15s;
 
   &:hover {
     background: rgba(255, 255, 255, 0.82);
-    box-shadow: 0 6px 18px rgba(68, 49, 27, 0.1);
+    box-shadow: 0rw (6px) rw(18px) rgba(68, 49, 27, 0.1);
   }
 
   &--highlight {
     background: linear-gradient(160deg, #fffbe8 0%, #fdf0c0 60%, #f5d97a 100%);
     border-color: rgba(180, 141, 54, 0.5);
-    box-shadow: 0 2px 12px rgba(180, 141, 54, 0.2);
+    box-shadow: 0rw (2px) rw(12px) rgba(180, 141, 54, 0.2);
 
     &:hover {
       background: linear-gradient(160deg, #fff8d6 0%, #fce97a 100%);
-      box-shadow: 0 6px 20px rgba(180, 141, 54, 0.3);
+      box-shadow: 0rw (6px) rw(20px) rgba(180, 141, 54, 0.3);
     }
 
     .card__name {
@@ -85,41 +85,41 @@
   }
 
   &__tag {
-    font-size: 11px;
+    font-size: rw(11px);
     color: var(--muted);
     letter-spacing: 0.12em;
-    padding: 2px 8px;
-    border: 1px solid rgba(101, 75, 43, 0.2);
-    border-radius: 2px;
+    padding: rw(2px) rw(8px);
+    border: rw(1px) solid rgba(101, 75, 43, 0.2);
+    border-radius: rw(2px);
     background: rgba(246, 231, 191, 0.5);
   }
 
   &__school {
-    font-size: 12px;
+    font-size: rw(12px);
     color: var(--muted);
     letter-spacing: 0.06em;
-    margin-top: 4px;
+    margin-top: rw(4px);
   }
 
   &__name {
     font-family: var(--font-serif);
-    font-size: 30px;
+    font-size: rw(30px);
     font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--ink);
     line-height: 1.1;
-    margin: 6px 0 2px;
+    margin: rw(6px) 0rw (2px);
   }
 
   &__divider {
-    width: 24px;
-    height: 1px;
+    width: rw(24px);
+    height: rw(1px);
     background: linear-gradient(90deg, transparent, rgba(171, 132, 73, 0.55), transparent);
-    margin: 4px auto;
+    margin: rw(4px) auto;
   }
 
   &__description {
-    font-size: 13px;
+    font-size: rw(13px);
     color: var(--muted);
     letter-spacing: 0.06em;
   }
@@ -127,74 +127,4 @@
 
 :host {
   --use-rem: 0;
-}
-
-:host(.board--fixed) {
-  // 1rem = 3.75px → rw(Xpx) = (X/3.75)rem = Xpx，完全固定不隨 viewport 縮放
-  font-size: 3.75px;
-  --use-rem: 1;
-
-  .board {
-    width: 1280px;
-  }
-}
-
-@media (max-width: 768px) {
-  .board {
-    &__inner {
-      padding: rw(20px) rw(16px) rw(28px);
-    }
-
-    &__header {
-      margin-bottom: rw(24px);
-    }
-
-    &__header-bracket {
-      font-size: rw(12px);
-      margin-bottom: rw(8px);
-    }
-
-    &__title {
-      font-size: rw(26px);
-    }
-
-    &__subtitle {
-      font-size: rw(13px);
-      margin: rw(8px) 0 0;
-    }
-
-    &__grid {
-      gap: rw(8px);
-      grid-template-columns: repeat(auto-fill, minmax(rw(120px), 1fr));
-    }
-  }
-
-  .card {
-    padding: rw(10px) rw(8px) rw(12px);
-    gap: rw(3px);
-
-    &__tag {
-      font-size: rw(10px);
-      padding: rw(2px) rw(6px);
-    }
-
-    &__school {
-      font-size: rw(11px);
-      margin-top: rw(3px);
-    }
-
-    &__name {
-      font-size: rw(24px);
-      margin: rw(4px) 0 rw(2px);
-    }
-
-    &__divider {
-      width: rw(20px);
-      margin: rw(3px) auto;
-    }
-
-    &__description {
-      font-size: rw(11px);
-    }
-  }
 }

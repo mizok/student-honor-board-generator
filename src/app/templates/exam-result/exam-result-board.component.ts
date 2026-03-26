@@ -1,6 +1,6 @@
-import { Component, computed, input } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import type { ExamResultData } from '@honor/shared-types'
+import { Component, computed, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import type { ExamResultData } from '../../core/templates';
 
 @Component({
   selector: 'app-exam-result-board',
@@ -8,22 +8,20 @@ import type { ExamResultData } from '@honor/shared-types'
   imports: [CommonModule],
   templateUrl: './exam-result-board.component.html',
   styleUrl: './exam-result-board.component.scss',
-  host: { '[class.board--fixed]': 'fixedWidth()' },
 })
 export class ExamResultBoardComponent {
-  readonly data = input.required<ExamResultData>()
-  readonly columns = input<number>(4)
-  readonly maskNames = input<boolean>(false)
-  readonly fixedWidth = input<boolean>(false)
+  readonly data = input.required<ExamResultData>();
+  readonly columns = input<number>(4);
+  readonly maskNames = input<boolean>(false);
 
   protected readonly gridStyle = computed(() => ({
     'grid-template-columns': `repeat(${this.columns()}, 1fr)`,
-  }))
+  }));
 
   protected mask(name: string): string {
-    if (!this.maskNames()) return name
-    if (name.length <= 1) return name
-    if (name.length === 2) return name[0] + '○'
-    return name[0] + '○'.repeat(name.length - 2) + name[name.length - 1]
+    if (!this.maskNames()) return name;
+    if (name.length <= 1) return name;
+    if (name.length === 2) return name[0] + '○';
+    return name[0] + '○'.repeat(name.length - 2) + name[name.length - 1];
   }
 }
