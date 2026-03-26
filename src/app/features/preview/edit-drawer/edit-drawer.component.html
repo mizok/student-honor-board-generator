@@ -61,26 +61,32 @@
   @if (isExamResult() && examData(); as data) {
     <div class="drawer__section">
       <div class="drawer__section-title">學生名單</div>
-      @for (student of data.students; track $index) {
-        <div class="drawer__chip-row">
-          <div class="drawer__chip-wrapper">
-            <p-chip
-              [label]="student.studentName + ' · ' + student.tag"
-              [removable]="true"
-              (onRemove)="deleteEntry('students', $index)"
-              styleClass="drawer__chip"
-            />
-            <p-button
-              icon="pi pi-pencil"
-              size="small"
-              severity="secondary"
-              [text]="true"
-              (onClick)="startEdit('students', $index, $any(student))"
-              styleClass="drawer__edit-btn"
-            />
+      <div cdkDropList (cdkDropListDropped)="reorder('students', $event)">
+        @for (student of data.students; track $index) {
+          <div class="drawer__chip-row" cdkDrag>
+            <div class="drawer__chip-wrapper">
+              <span class="drawer__drag-handle" cdkDragHandle>
+                <i class="pi pi-bars"></i>
+              </span>
+              <p-chip
+                [label]="student.studentName + ' · ' + student.tag"
+                [removable]="true"
+                (onRemove)="deleteEntry('students', $index)"
+                styleClass="drawer__chip"
+              />
+              <p-button
+                icon="pi pi-pencil"
+                size="small"
+                severity="secondary"
+                [text]="true"
+                (onClick)="startEdit('students', $index, $any(student))"
+                styleClass="drawer__edit-btn"
+              />
+            </div>
+            <div class="drawer__drag-placeholder" *cdkDragPlaceholder></div>
           </div>
-        </div>
-      }
+        }
+      </div>
       <p-button
         label="＋ 新增學生"
         size="small"
@@ -102,26 +108,32 @@
     ) {
       <div class="drawer__section">
         <div class="drawer__section-title">{{ section.label }}</div>
-        @for (entry of $any(data)[section.key]; track $index) {
-          <div class="drawer__chip-row">
-            <div class="drawer__chip-wrapper">
-              <p-chip
-                [label]="'第' + entry.rank + '名 ' + entry.classNumber + ' ' + entry.studentName"
-                [removable]="true"
-                (onRemove)="deleteEntry(section.key, $index)"
-                styleClass="drawer__chip"
-              />
-              <p-button
-                icon="pi pi-pencil"
-                size="small"
-                severity="secondary"
-                [text]="true"
-                (onClick)="startEdit(section.key, $index, $any(entry))"
-                styleClass="drawer__edit-btn"
-              />
+        <div cdkDropList (cdkDropListDropped)="reorder(section.key, $event)">
+          @for (entry of $any(data)[section.key]; track $index) {
+            <div class="drawer__chip-row" cdkDrag>
+              <div class="drawer__chip-wrapper">
+                <span class="drawer__drag-handle" cdkDragHandle>
+                  <i class="pi pi-bars"></i>
+                </span>
+                <p-chip
+                  [label]="'第' + entry.rank + '名 ' + entry.classNumber + ' ' + entry.studentName"
+                  [removable]="true"
+                  (onRemove)="deleteEntry(section.key, $index)"
+                  styleClass="drawer__chip"
+                />
+                <p-button
+                  icon="pi pi-pencil"
+                  size="small"
+                  severity="secondary"
+                  [text]="true"
+                  (onClick)="startEdit(section.key, $index, $any(entry))"
+                  styleClass="drawer__edit-btn"
+                />
+              </div>
+              <div class="drawer__drag-placeholder" *cdkDragPlaceholder></div>
             </div>
-          </div>
-        }
+          }
+        </div>
         <p-button
           label="＋ 新增"
           size="small"
@@ -166,7 +178,7 @@
         />
       </div>
       <div class="edit-dialog__field">
-        <label class="edit-dialog__label">國中</label>
+        <label class="edit-dialog__label">學校</label>
         <input
           pInputText
           [ngModel]="editBuffer()['school']"

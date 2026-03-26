@@ -1,6 +1,7 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DragDropModule, moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { DrawerModule } from 'primeng/drawer';
 import { DialogModule } from 'primeng/dialog';
 import { ChipModule } from 'primeng/chip';
@@ -22,6 +23,7 @@ import type {
   imports: [
     CommonModule,
     FormsModule,
+    DragDropModule,
     DrawerModule,
     DialogModule,
     ChipModule,
@@ -155,6 +157,28 @@ export class EditDrawerComponent {
       const key = section as 'schoolRankings' | 'classRankings';
       const nextRank = (updated[key].at(-1)?.rank ?? 0) + 1;
       updated[key] = [...updated[key], { rank: nextRank, classNumber: '', studentName: '新學生' }];
+      this.board.parsedData.set(updated);
+    }
+  }
+
+  protected reorder(section: string, event: CdkDragDrop<unknown[]>): void {
+    const data = this.board.parsedData();
+    if (!data) return;
+
+    if (this.isExamResult() && section === 'students') {
+      const updated = { ...(data as ExamResultData) };
+      const arr = [...updated.students];
+      moveItemInArray(arr, event.previousIndex, event.currentIndex);
+      updated.students = arr;
+      this.board.parsedData.set(updated);
+    }
+
+    if (this.isClassRanking()) {
+      const updated = { ...(data as ClassRankingData) };
+      const key = section as 'schoolRankings' | 'classRankings';
+      const arr = [...updated[key]];
+      moveItemInArray(arr, event.previousIndex, event.currentIndex);
+      updated[key] = arr;
       this.board.parsedData.set(updated);
     }
   }

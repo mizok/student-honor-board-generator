@@ -16,6 +16,48 @@
 
   &__chip-row {
     margin-bottom: 6px;
+
+    &.cdk-drag-preview {
+      background: var(--paper);
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgba(68, 49, 27, 0.15);
+      opacity: 0.95;
+    }
+
+    &.cdk-drag-animating {
+      transition: transform 200ms ease;
+    }
+  }
+
+  &__drag-placeholder {
+    height: 34px;
+    margin-bottom: 6px;
+    border: 1px dashed rgba(132, 101, 62, 0.35);
+    border-radius: 4px;
+    background: rgba(246, 231, 191, 0.25);
+  }
+
+  &__drag-handle {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    color: var(--muted);
+    opacity: 0.4;
+    cursor: grab;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+
+    .drawer__chip-wrapper:hover & {
+      opacity: 0.8;
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    i {
+      font-size: 12px;
+    }
   }
 
   &__chip-wrapper {
@@ -96,6 +138,10 @@
     margin-top: 10px;
     width: 100%;
   }
+}
+
+.cdk-drop-list-dragging .drawer__chip-row:not(.cdk-drag-placeholder) {
+  transition: transform 200ms ease;
 }
 
 .edit-dialog {

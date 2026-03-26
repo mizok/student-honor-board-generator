@@ -40,7 +40,7 @@ export const TEMPLATE_REGISTRY: Readonly<Record<string, TemplateDefinition>> = {
     parseCsv: parseExamResultCsv,
     columns: [
       { key: 'tag', label: '標籤', hint: '如：英文、數學、藝術', example: '英文' },
-      { key: 'school', label: '國中名稱', hint: '學生就讀的國中', example: '鶯歌國中' },
+      { key: 'school', label: '學校名稱', hint: '學生就讀的校名', example: '鶯歌國中' },
       { key: 'studentName', label: '學生姓名', hint: '學生全名', example: '王小明' },
       { key: 'description', label: '描述', hint: '如：錄取學校或其他說明', example: '建國高中' },
       { key: 'highlight', label: '金色強調', hint: '填「是」啟用金色卡片', example: '' },
