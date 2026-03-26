@@ -18,6 +18,15 @@
         size="small"
         (onClick)="board.toggleDrawer()"
       />
+      <p-select-button
+        [options]="widthOptions"
+        [ngModel]="board.exportWidth()"
+        (ngModelChange)="board.exportWidth.set($event)"
+        [allowEmpty]="false"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="preview__width-select"
+      />
       <p-splitbutton
         label="下載 PDF"
         icon="pi pi-download"
