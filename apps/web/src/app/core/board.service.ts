@@ -37,7 +37,7 @@ export class BoardService {
       }
 
       this.templateId.set(templateId)
-      this.parsedData.set(result.data)
+      this.parsedData.set(result.data as ExamResultData | ClassRankingData)
       this.uiState.set('preview')
     } catch (err) {
       this.errorMessage.set(err instanceof Error ? err.message : '解析失敗，請確認檔案格式正確')
