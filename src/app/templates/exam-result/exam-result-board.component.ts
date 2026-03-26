@@ -12,8 +12,16 @@ import type { ExamResultData } from '@honor/shared-types'
 export class ExamResultBoardComponent {
   readonly data = input.required<ExamResultData>()
   readonly columns = input<number>(4)
+  readonly maskNames = input<boolean>(false)
 
   protected readonly gridStyle = computed(() => ({
     'grid-template-columns': `repeat(${this.columns()}, 1fr)`,
   }))
+
+  protected mask(name: string): string {
+    if (!this.maskNames()) return name
+    if (name.length <= 1) return name
+    if (name.length === 2) return name[0] + '○'
+    return name[0] + '○'.repeat(name.length - 2) + name[name.length - 1]
+  }
 }

@@ -2,17 +2,19 @@ import { Component, inject, computed, signal } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { FormsModule } from '@angular/forms'
 import { DrawerModule } from 'primeng/drawer'
+import { DialogModule } from 'primeng/dialog'
 import { ChipModule } from 'primeng/chip'
 import { ButtonModule } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
 import { SelectButtonModule } from 'primeng/selectbutton'
+import { ToggleSwitchModule } from 'primeng/toggleswitch'
 import { BoardService } from '../../../core/board.service'
 import type { ExamResultData, ClassRankingData, ExamResultStudent, RankingEntry } from '@honor/shared-types'
 
 @Component({
   selector: 'app-edit-drawer',
   standalone: true,
-  imports: [CommonModule, FormsModule, DrawerModule, ChipModule, ButtonModule, InputTextModule, SelectButtonModule],
+  imports: [CommonModule, FormsModule, DrawerModule, DialogModule, ChipModule, ButtonModule, InputTextModule, SelectButtonModule, ToggleSwitchModule],
   templateUrl: './edit-drawer.component.html',
   styleUrl: './edit-drawer.component.scss',
 })
@@ -33,10 +35,13 @@ export class EditDrawerComponent {
   protected editingIndex = signal<{ section: string; index: number } | null>(null)
   protected editBuffer = signal<Record<string, string>>({})
 
+  protected readonly dialogVisible = computed(() => this.editingIndex() !== null)
+
   protected readonly columnOptions = [2, 3, 4, 5, 6].map(n => ({ label: String(n), value: n }))
 
   protected readonly title = computed(() => this.board.parsedData()?.title ?? '')
   protected readonly subtitle = computed(() => this.board.parsedData()?.subtitle ?? '')
+  protected readonly tagline = computed(() => (this.board.parsedData() as ExamResultData)?.tagline ?? '')
 
   protected updateTitle(value: string): void {
     const data = this.board.parsedData()
@@ -48,9 +53,24 @@ export class EditDrawerComponent {
     if (data) this.board.parsedData.set({ ...data, subtitle: value })
   }
 
+  protected updateTagline(value: string): void {
+    const data = this.board.parsedData()
+    if (data) this.board.parsedData.set({ ...data, tagline: value })
+  }
+
+  protected updateBuffer(key: string, value: string): void {
+    this.editBuffer.update(buf => ({ ...buf, [key]: value }))
+  }
+
   protected startEdit(section: string, index: number, entry: Record<string, unknown>): void {
+    this.editBuffer.set(Object.fromEntries(
+      Object.entries(entry).map(([k, v]) => [k, String(v)])
+    ))
     this.editingIndex.set({ section, index })
-    this.editBuffer.set(Object.fromEntries(Object.entries(entry).map(([k, v]) => [k, String(v)])))
+  }
+
+  protected closeDialog(): void {
+    this.editingIndex.set(null)
   }
 
   protected saveEdit(): void {
@@ -63,7 +83,10 @@ export class EditDrawerComponent {
     if (this.isExamResult() && pos.section === 'students') {
       const updated = { ...(data as ExamResultData) }
       updated.students = [...updated.students]
-      updated.students[pos.index] = this.editBuffer() as unknown as ExamResultStudent
+      updated.students[pos.index] = {
+        ...this.editBuffer(),
+        highlight: this.editBuffer()['highlight'] === 'true',
+      } as unknown as ExamResultStudent
       this.board.parsedData.set(updated)
     }
 
@@ -105,7 +128,7 @@ export class EditDrawerComponent {
 
     if (this.isExamResult()) {
       const updated = { ...(data as ExamResultData) }
-      updated.students = [...updated.students, { subject: '', juniorHighSchool: '', studentName: '新學生', seniorHighSchool: '' }]
+      updated.students = [...updated.students, { tag: '', juniorHighSchool: '', studentName: '新學生', seniorHighSchool: '', highlight: false }]
       this.board.parsedData.set(updated)
     }
 

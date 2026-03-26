@@ -26,7 +26,7 @@
                 @for (entry of schoolByRank().get(rank)!; track $index) {
                   <div class="card__entry">
                     <span class="card__class">{{ entry.classNumber }}</span>
-                    <span class="card__name">{{ entry.studentName }}</span>
+                    <span class="card__name">{{ mask(entry.studentName) }}</span>
                   </div>
                 }
               </div>
@@ -53,7 +53,7 @@
                 @for (entry of classByRank().get(rank)!; track $index) {
                   <div class="card__entry">
                     <span class="card__class">{{ entry.classNumber }}</span>
-                    <span class="card__name">{{ entry.studentName }}</span>
+                    <span class="card__name">{{ mask(entry.studentName) }}</span>
                   </div>
                 }
               </div>

@@ -17,6 +17,19 @@
       <label class="drawer__label">副標題</label>
       <input pInputText [ngModel]="subtitle()" (ngModelChange)="updateSubtitle($event)" class="drawer__input" placeholder="（選填）" />
     </div>
+    @if (isExamResult()) {
+      <div class="drawer__field">
+        <label class="drawer__label">裝飾文字</label>
+        <input pInputText [ngModel]="tagline()" (ngModelChange)="updateTagline($event)" class="drawer__input" placeholder="如：耀・煜・傳・會" />
+      </div>
+    }
+    <div class="drawer__field drawer__field--row">
+      <label class="drawer__label">遮蔽姓名</label>
+      <p-toggleswitch
+        [ngModel]="board.maskNames()"
+        (ngModelChange)="board.maskNames.set($event)"
+      />
+    </div>
     <div class="drawer__field">
       <label class="drawer__label">欄數</label>
       <p-selectbutton
@@ -36,23 +49,22 @@
       <div class="drawer__section-title">學生名單</div>
       @for (student of data.students; track $index) {
         <div class="drawer__chip-row">
-          @if (editingIndex()?.section === 'students' && editingIndex()?.index === $index) {
-            <div class="drawer__inline-edit">
-              <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
-              <input pInputText [(ngModel)]="editBuffer()['subject']" placeholder="科目" />
-              <input pInputText [(ngModel)]="editBuffer()['juniorHighSchool']" placeholder="國中" />
-              <input pInputText [(ngModel)]="editBuffer()['seniorHighSchool']" placeholder="錄取學校" />
-              <p-button label="儲存" size="small" (onClick)="saveEdit()" />
-            </div>
-          } @else {
+          <div class="drawer__chip-wrapper">
             <p-chip
-              [label]="student.studentName + ' · ' + student.subject"
+              [label]="student.studentName + ' · ' + student.tag"
               [removable]="true"
               (onRemove)="deleteEntry('students', $index)"
-              (onClick)="startEdit('students', $index, $any(student))"
               styleClass="drawer__chip"
             />
-          }
+            <p-button
+              icon="pi pi-pencil"
+              size="small"
+              severity="secondary"
+              [text]="true"
+              (onClick)="startEdit('students', $index, $any(student))"
+              styleClass="drawer__edit-btn"
+            />
+          </div>
         </div>
       }
       <p-button
@@ -72,22 +84,22 @@
         <div class="drawer__section-title">{{ section.label }}</div>
         @for (entry of $any(data)[section.key]; track $index) {
           <div class="drawer__chip-row">
-            @if (editingIndex()?.section === section.key && editingIndex()?.index === $index) {
-              <div class="drawer__inline-edit">
-                <input pInputText [(ngModel)]="editBuffer()['rank']" placeholder="名次" type="number" />
-                <input pInputText [(ngModel)]="editBuffer()['classNumber']" placeholder="班級" />
-                <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
-                <p-button label="儲存" size="small" (onClick)="saveEdit()" />
-              </div>
-            } @else {
+            <div class="drawer__chip-wrapper">
               <p-chip
                 [label]="'第' + entry.rank + '名 ' + entry.classNumber + ' ' + entry.studentName"
                 [removable]="true"
                 (onRemove)="deleteEntry(section.key, $index)"
-                (onClick)="startEdit(section.key, $index, $any(entry))"
                 styleClass="drawer__chip"
               />
-            }
+              <p-button
+                icon="pi pi-pencil"
+                size="small"
+                severity="secondary"
+                [text]="true"
+                (onClick)="startEdit(section.key, $index, $any(entry))"
+                styleClass="drawer__edit-btn"
+              />
+            </div>
           </div>
         }
         <p-button
@@ -101,3 +113,66 @@
     }
   }
 </p-drawer>
+
+<!-- 編輯 Dialog -->
+<p-dialog
+  [visible]="dialogVisible()"
+  (visibleChange)="$event ? null : closeDialog()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '320px' }"
+  header="編輯資料"
+>
+  <!-- Exam Result fields -->
+  @if (isExamResult()) {
+    <div class="edit-dialog__fields">
+      <div class="edit-dialog__field">
+        <label class="edit-dialog__label">姓名</label>
+        <input pInputText [ngModel]="editBuffer()['studentName']" (ngModelChange)="updateBuffer('studentName', $event)" class="edit-dialog__input" />
+      </div>
+      <div class="edit-dialog__field">
+        <label class="edit-dialog__label">標籤</label>
+        <input pInputText [ngModel]="editBuffer()['tag']" (ngModelChange)="updateBuffer('tag', $event)" class="edit-dialog__input" />
+      </div>
+      <div class="edit-dialog__field">
+        <label class="edit-dialog__label">國中</label>
+        <input pInputText [ngModel]="editBuffer()['juniorHighSchool']" (ngModelChange)="updateBuffer('juniorHighSchool', $event)" class="edit-dialog__input" />
+      </div>
+      <div class="edit-dialog__field">
+        <label class="edit-dialog__label">錄取學校</label>
+        <input pInputText [ngModel]="editBuffer()['seniorHighSchool']" (ngModelChange)="updateBuffer('seniorHighSchool', $event)" class="edit-dialog__input" />
+      </div>
+      <div class="edit-dialog__field edit-dialog__field--row">
+        <label class="edit-dialog__label">金色強調</label>
+        <p-toggleswitch
+          [ngModel]="editBuffer()['highlight'] === 'true'"
+          (ngModelChange)="updateBuffer('highlight', $event ? 'true' : 'false')"
+        />
+      </div>
+    </div>
+  }
+
+  <!-- Class Ranking fields -->
+  @if (isClassRanking()) {
+    <div class="edit-dialog__fields">
+      <div class="edit-dialog__field">
+        <label class="edit-dialog__label">名次</label>
+        <input pInputText type="number" [ngModel]="editBuffer()['rank']" (ngModelChange)="updateBuffer('rank', $event)" class="edit-dialog__input" />
+      </div>
+      <div class="edit-dialog__field">
+        <label class="edit-dialog__label">班級</label>
+        <input pInputText [ngModel]="editBuffer()['classNumber']" (ngModelChange)="updateBuffer('classNumber', $event)" class="edit-dialog__input" />
+      </div>
+      <div class="edit-dialog__field">
+        <label class="edit-dialog__label">姓名</label>
+        <input pInputText [ngModel]="editBuffer()['studentName']" (ngModelChange)="updateBuffer('studentName', $event)" class="edit-dialog__input" />
+      </div>
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <p-button label="取消" severity="secondary" [text]="true" (onClick)="closeDialog()" />
+    <p-button label="儲存" (onClick)="saveEdit()" />
+  </ng-template>
+</p-dialog>

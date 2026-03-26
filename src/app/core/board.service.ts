@@ -12,6 +12,7 @@ export class BoardService {
   readonly parsedData = signal<ExamResultData | ClassRankingData | null>(null)
   readonly columns = signal(4)
   readonly drawerOpen = signal(false)
+  readonly maskNames = signal(false)
   readonly isLoading = signal(false)
   readonly errorMessage = signal<string | null>(null)
 
@@ -61,6 +62,7 @@ export class BoardService {
     this.columns.set(4)
     this.errorMessage.set(null)
     this.drawerOpen.set(false)
+    this.maskNames.set(false)
   }
 
   toggleDrawer(): void {
