@@ -1,0 +1,10 @@
+@use 'sass:math';
+
+/// Design width for mobile (375px iPhone baseline)
+$vw-context: (375 * 0.01) * 1px; // = 3.75px
+
+/// Convert a pixel value to vw relative to 375px viewport
+/// Usage: rw(16px) → 4.267vw  (= 16px at 375px wide)
+@function rw($target) {
+  @return math.div($target, $vw-context) * 1vw;
+}

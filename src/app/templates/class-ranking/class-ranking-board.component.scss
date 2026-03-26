@@ -1,3 +1,5 @@
+@use '../../../styles/responsive' as *;
+
 .board {
   width: min(1400px, 100%);
   margin: 0 auto;
@@ -140,6 +142,74 @@
     color: var(--muted);
     font-size: 15px;
     letter-spacing: 0.1em;
+  }
+}
+
+@media (max-width: 600px) {
+  .board {
+    &::before { inset: rw(10px); }
+    &::after  { inset: rw(16px); }
+
+    &__inner {
+      padding: rw(36px) rw(20px) rw(40px);
+    }
+
+    &__hero {
+      margin-bottom: rw(20px);
+    }
+
+    &__eyebrow {
+      font-size: rw(13px);
+    }
+
+    &__subtitle {
+      font-size: rw(14px);
+    }
+
+    &__section-badge {
+      min-width: rw(180px);
+      font-size: rw(18px);
+      padding: rw(8px) rw(16px);
+    }
+
+    &__section-subtitle {
+      font-size: rw(13px);
+    }
+
+    &__cards {
+      gap: rw(10px);
+
+      &--school,
+      &--class {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    &__footer {
+      font-size: rw(13px);
+    }
+  }
+
+  .card {
+    &__head {
+      font-size: rw(17px);
+      padding: rw(8px) rw(12px);
+    }
+
+    &__entry {
+      padding: rw(7px) rw(10px);
+      gap: rw(8px);
+      min-height: rw(44px);
+    }
+
+    &__class {
+      min-width: rw(46px);
+      font-size: rw(13px);
+    }
+
+    &__name {
+      font-size: rw(20px);
+    }
   }
 }
 

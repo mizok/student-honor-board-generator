@@ -40,3 +40,20 @@
     min-height: 0;
   }
 }
+
+@media (max-width: 600px) {
+  .preview {
+    // Drawer overlays the canvas on mobile instead of pushing it
+    &--drawer-open {
+      grid-template-columns: 1fr;
+    }
+
+    &__toolbar {
+      padding: 0 12px;
+    }
+
+    &__canvas {
+      padding: 16px 8px;
+    }
+  }
+}

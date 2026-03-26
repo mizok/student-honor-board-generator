@@ -1,3 +1,5 @@
+@use '../../../styles/responsive' as *;
+
 .board {
   width: min(1280px, 100%);
   margin: 0 auto;
@@ -118,5 +120,46 @@
     font-size: 13px;
     color: var(--muted);
     letter-spacing: 0.06em;
+  }
+}
+
+@media (max-width: 600px) {
+  .board {
+    &__inner {
+      padding: rw(20px) rw(16px) rw(28px);
+    }
+
+    &__header {
+      margin-bottom: rw(24px);
+    }
+
+    &__header-bracket {
+      font-size: rw(12px);
+    }
+
+    &__subtitle {
+      font-size: rw(13px);
+    }
+
+    &__grid {
+      gap: rw(8px);
+    }
+  }
+
+  .card {
+    padding: rw(10px) rw(8px) rw(12px);
+
+    &__name {
+      font-size: rw(24px);
+    }
+
+    &__tag {
+      font-size: rw(10px);
+    }
+
+    &__school,
+    &__description {
+      font-size: rw(11px);
+    }
   }
 }
