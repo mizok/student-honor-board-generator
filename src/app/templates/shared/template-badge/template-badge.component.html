@@ -1,0 +1,33 @@
+<div
+  #root
+  class="template-badge"
+  [class.template-badge--green]="tone() === 'green'"
+  [style.--badge-min-width]="minWidth() || null"
+>
+  <svg
+    class="template-badge__background"
+    [attr.viewBox]="backgroundViewBox()"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient [attr.id]="gradientId" x1="0" y1="0" x2="0" [attr.y2]="svgHeight()" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" [attr.stop-color]="palette().gradientTop" />
+        <stop offset="100%" [attr.stop-color]="palette().gradientBottom" />
+      </linearGradient>
+    </defs>
+    <rect
+      [attr.x]="bodyX()"
+      y="0"
+      [attr.width]="bodyWidth()"
+      [attr.height]="svgHeight()"
+      [attr.fill]="'url(#' + gradientId + ')'"
+    />
+    <polygon [attr.points]="startPoints()" [attr.fill]="'url(#' + gradientId + ')'" />
+    <polygon [attr.points]="endPoints()" [attr.fill]="'url(#' + gradientId + ')'" />
+  </svg>
+
+  <span class="template-badge__label" [style.color]="palette().textColor">
+    {{ label() }}
+  </span>
+</div>

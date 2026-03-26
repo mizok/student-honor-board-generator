@@ -82,27 +82,6 @@
     flex: 1;
   }
 
-  &__section-badge {
-    min-width: rw(260px);
-    padding: rw(12px) rw(28px);
-    text-align: center;
-    font-size: rw(26px);
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%);
-    border: rw(1px) solid rgba(112, 83, 33, 0.15);
-
-    &--gold {
-      color: #4c3208;
-      background: linear-gradient(180deg, #efca74 0%, #d9ac46 100%);
-    }
-
-    &--green {
-      color: #274235;
-      background: linear-gradient(180deg, #c8dbcb 0%, #9cb59d 100%);
-    }
-  }
-
   &__section-subtitle {
     text-align: center;
     margin: 0 0 rw(24px);

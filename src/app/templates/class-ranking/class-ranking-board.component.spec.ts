@@ -2,20 +2,26 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-describe('ClassRankingBoardComponent layout', () => {
-  it('switches to compact cards when columns are 5 or more', () => {
-    const ts = readFileSync(resolve(__dirname, './class-ranking-board.component.ts'), 'utf8')
+describe('ClassRankingBoardComponent badge styles', () => {
+  it('renders section badges through the shared template badge component', () => {
     const html = readFileSync(resolve(__dirname, './class-ranking-board.component.html'), 'utf8')
+    const ts = readFileSync(resolve(__dirname, './class-ranking-board.component.ts'), 'utf8')
 
-    expect(ts).toContain('protected readonly isCompactColumns = computed(() => this.columns() >= 5);')
-    expect(html).toContain('[class.board__cards--compact]="isCompactColumns()"')
+    expect(html).toContain('<app-template-badge')
+    expect(ts).toContain('TemplateBadgeComponent')
   })
 
-  it('allows class-ranking names to wrap in compact card mode', () => {
+  it('does not rely on clip-path for section badges', () => {
     const scss = readFileSync(resolve(__dirname, './class-ranking-board.component.scss'), 'utf8')
 
-    expect(scss).toContain('&--compact')
-    expect(scss).toContain('white-space: normal;')
-    expect(scss).toContain('overflow-wrap: anywhere;')
+    expect(scss).not.toContain('clip-path:')
+  })
+
+  it('does not keep the badge shape implementation inside the class-ranking stylesheet', () => {
+    const scss = readFileSync(resolve(__dirname, './class-ranking-board.component.scss'), 'utf8')
+
+    expect(scss).not.toContain('&__section-badge-start')
+    expect(scss).not.toContain('&__section-badge-body')
+    expect(scss).not.toContain('&__section-badge-end')
   })
 })
