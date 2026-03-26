@@ -1,0 +1,56 @@
+{
+  "name": "student-honor-board-generator",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "npm@10.9.3",
+  "scripts": {
+    "dev": "nx run-many -t serve -p web worker",
+    "dev:web": "nx serve web",
+    "dev:worker": "nx serve worker",
+    "build": "nx run-many -t build",
+    "test": "nx run-many -t test"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [{ "files": "*.html", "options": { "parser": "angular" } }]
+  },
+  "dependencies": {
+    "@angular/animations": "^21.1.3",
+    "@angular/cdk": "^21.1.3",
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@google/generative-ai": "^0.24.0",
+    "@hono/zod-validator": "^0.7.6",
+    "@primeuix/themes": "^2.0.3",
+    "hono": "^4.11.9",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
+    "primeicons": "^7.0.0",
+    "primeng": "^21.1.1",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "xlsx": "^0.18.5",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@angular-devkit/core": "^21.1.3",
+    "@angular-devkit/schematics": "^21.1.3",
+    "@angular/build": "^21.1.3",
+    "@angular/cli": "^21.1.3",
+    "@angular/compiler-cli": "^21.1.0",
+    "@cloudflare/workers-types": "^4.20260213.0",
+    "@nx/angular": "22.5.0",
+    "@nx/workspace": "22.5.0",
+    "@schematics/angular": "^21.1.3",
+    "@types/html2canvas": "^1.0.0",
+    "nx": "^22.5.0",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8",
+    "wrangler": "^4.65.0"
+  }
+}
