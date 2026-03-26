@@ -1,0 +1,27 @@
+<div class="board">
+  <div class="board__inner">
+
+    <!-- Header -->
+    <header class="board__header">
+      <div class="board__header-bracket">[ 耀・煜・傳・會 ]</div>
+      <h1 class="board__title">{{ data().title }}</h1>
+      @if (data().subtitle) {
+        <p class="board__subtitle">{{ data().subtitle }}</p>
+      }
+    </header>
+
+    <!-- Card grid -->
+    <div class="board__grid">
+      @for (student of data().students; track $index) {
+        <div class="card">
+          <div class="card__subject">{{ student.subject }}</div>
+          <div class="card__school">{{ student.juniorHighSchool }}</div>
+          <div class="card__name">{{ student.studentName }}</div>
+          <div class="card__divider"></div>
+          <div class="card__admitted">{{ student.seniorHighSchool }}</div>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>
