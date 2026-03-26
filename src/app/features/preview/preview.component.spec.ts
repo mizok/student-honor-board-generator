@@ -1,5 +1,7 @@
 import { createEnvironmentInjector, runInInjectionContext, signal, type EnvironmentInjector } from '@angular/core'
 import { Subject } from 'rxjs'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MessageService } from 'primeng/api'
 import { DialogService } from 'primeng/dynamicdialog'
@@ -111,5 +113,11 @@ describe('PreviewComponent', () => {
     onClose$.next(undefined)
 
     expect(exportServiceStub.downloadPng).not.toHaveBeenCalled()
+  })
+
+  it('does not bind a drawer-open layout class on the preview root', () => {
+    const template = readFileSync(resolve(__dirname, './preview.component.html'), 'utf8')
+
+    expect(template).not.toContain('[class.preview--drawer-open]')
   })
 })

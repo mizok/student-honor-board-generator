@@ -3,11 +3,6 @@
   grid-template-rows: 52px 1fr;
   grid-template-columns: 1fr;
   min-height: 100vh;
-  transition: grid-template-columns 0.3s ease;
-
-  &--drawer-open {
-    grid-template-columns: 1fr 360px;
-  }
 
   &__toolbar {
     grid-column: 1 / -1;
@@ -43,11 +38,6 @@
 
 @media (max-width: 768px) {
   .preview {
-    // Drawer overlays the canvas on mobile instead of pushing it
-    &--drawer-open {
-      grid-template-columns: 1fr;
-    }
-
     &__toolbar {
       padding: 0 12px;
     }
