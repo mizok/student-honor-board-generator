@@ -248,11 +248,14 @@ Note: `html2pdf.js` is not used because it is unmaintained. `html2canvas` + `jsP
 | Scenario | Handling |
 |----------|----------|
 | File type not supported | Frontend rejects before upload, shows inline message |
-| File size > 5 MB | Frontend rejects before upload, shows inline message |
-| Gemini cannot map data to schema | Worker returns `{ success: false, message }`, shown full-screen in UPLOAD state |
-| Gemini API HTTP error | Worker returns generic `message`, shown in UPLOAD state |
+| File size > 5 MB | Frontend rejects before upload (measured as original file size before base64 encoding), shows inline message |
+| Gemini cannot map data to schema | Worker returns `{ success: false, message }`, shown with "重新上傳" button (same file will likely fail again) |
+| Gemini API HTTP error / network error | Worker returns `{ success: false, message }`, shown with "重試" button (transient error, retry same file) |
 | Export failure | `p-toast` error notification |
-| Network error | `p-toast` error notification + retry option |
+
+**File size limit implementation detail:**
+- Frontend validates against original file size (what the user sees in Finder) — limit is 5 MB
+- Worker guard accepts up to 6.7 MB of request body (5 MB × 1.33 base64 expansion factor)
 
 ---
 
