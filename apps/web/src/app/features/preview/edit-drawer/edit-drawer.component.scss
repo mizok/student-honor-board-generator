@@ -1,0 +1,51 @@
+.drawer {
+  &__section {
+    margin-bottom: 28px;
+  }
+
+  &__section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(132, 101, 62, 0.14);
+  }
+
+  &__chip-row {
+    margin-bottom: 6px;
+  }
+
+  &__chip {
+    cursor: pointer;
+    width: 100%;
+    justify-content: flex-start;
+    transition: background 0.15s;
+
+    &:hover {
+      background: var(--gold-soft) !important;
+    }
+  }
+
+  &__inline-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background: var(--gold-soft);
+    border: 1px solid rgba(180, 141, 84, 0.28);
+    border-radius: 6px;
+
+    input {
+      width: 100%;
+      font-size: 14px;
+    }
+  }
+
+  &__add {
+    margin-top: 10px;
+    width: 100%;
+  }
+}

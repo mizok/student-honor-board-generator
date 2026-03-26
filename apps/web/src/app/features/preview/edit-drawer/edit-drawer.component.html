@@ -1,0 +1,79 @@
+<p-drawer
+  [visible]="board.drawerOpen()"
+  (visibleChange)="board.drawerOpen.set($event)"
+  position="right"
+  [modal]="false"
+  [style]="{ width: '360px' }"
+  header="編輯內容"
+>
+  <!-- Exam Result mode -->
+  @if (isExamResult() && examData(); as data) {
+    <div class="drawer__section">
+      <div class="drawer__section-title">學生名單</div>
+      @for (student of data.students; track $index) {
+        <div class="drawer__chip-row">
+          @if (editingIndex()?.section === 'students' && editingIndex()?.index === $index) {
+            <div class="drawer__inline-edit">
+              <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
+              <input pInputText [(ngModel)]="editBuffer()['subject']" placeholder="科目" />
+              <input pInputText [(ngModel)]="editBuffer()['juniorHighSchool']" placeholder="國中" />
+              <input pInputText [(ngModel)]="editBuffer()['seniorHighSchool']" placeholder="錄取學校" />
+              <p-button label="儲存" size="small" (onClick)="saveEdit()" />
+            </div>
+          } @else {
+            <p-chip
+              [label]="student.studentName + ' · ' + student.subject"
+              [removable]="true"
+              (onRemove)="deleteEntry('students', $index)"
+              (onClick)="startEdit('students', $index, $any(student))"
+              styleClass="drawer__chip"
+            />
+          }
+        </div>
+      }
+      <p-button
+        label="＋ 新增學生"
+        size="small"
+        severity="secondary"
+        (onClick)="addEntry('students')"
+        styleClass="drawer__add"
+      />
+    </div>
+  }
+
+  <!-- Class Ranking mode -->
+  @if (isClassRanking() && rankingData(); as data) {
+    @for (section of [{ key: 'schoolRankings', label: '校排榮譽' }, { key: 'classRankings', label: '班排榮譽' }]; track section.key) {
+      <div class="drawer__section">
+        <div class="drawer__section-title">{{ section.label }}</div>
+        @for (entry of $any(data)[section.key]; track $index) {
+          <div class="drawer__chip-row">
+            @if (editingIndex()?.section === section.key && editingIndex()?.index === $index) {
+              <div class="drawer__inline-edit">
+                <input pInputText [(ngModel)]="editBuffer()['rank']" placeholder="名次" type="number" />
+                <input pInputText [(ngModel)]="editBuffer()['classNumber']" placeholder="班級" />
+                <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
+                <p-button label="儲存" size="small" (onClick)="saveEdit()" />
+              </div>
+            } @else {
+              <p-chip
+                [label]="'第' + entry.rank + '名 ' + entry.classNumber + ' ' + entry.studentName"
+                [removable]="true"
+                (onRemove)="deleteEntry(section.key, $index)"
+                (onClick)="startEdit(section.key, $index, $any(entry))"
+                styleClass="drawer__chip"
+              />
+            }
+          </div>
+        }
+        <p-button
+          label="＋ 新增"
+          size="small"
+          severity="secondary"
+          (onClick)="addEntry(section.key)"
+          styleClass="drawer__add"
+        />
+      </div>
+    }
+  }
+</p-drawer>
