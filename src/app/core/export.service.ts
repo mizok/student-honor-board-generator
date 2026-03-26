@@ -2,26 +2,57 @@ import { Injectable } from '@angular/core'
 
 @Injectable({ providedIn: 'root' })
 export class ExportService {
+  private async cloneOffscreen(
+    element: HTMLElement,
+    width: number,
+  ): Promise<{ clone: HTMLElement; cleanup: () => void }> {
+    const container = document.createElement('div');
+    container.style.cssText =
+      'position:fixed;top:-9999px;left:-9999px;pointer-events:none;overflow:visible;';
 
-  async downloadPng(element: HTMLElement): Promise<void> {
-    await document.fonts.ready
-    const html2canvas = (await import('html2canvas')).default
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true })
-    this.triggerDownload(canvas.toDataURL('image/png'), 'honor-board.png')
+    const clone = element.cloneNode(true) as HTMLElement;
+    clone.style.width = `${width}px`;
+    clone.style.maxWidth = 'none';
+    clone.style.setProperty('--container-width', `${width / 100}px`);
+    container.appendChild(clone);
+    document.body.appendChild(container);
+
+    await new Promise<void>(r => requestAnimationFrame(() => r()));
+
+    return {
+      clone,
+      cleanup: () => document.body.removeChild(container),
+    };
   }
 
-  async downloadPdf(element: HTMLElement): Promise<void> {
+  async downloadPng(element: HTMLElement, width: number): Promise<void> {
+    await document.fonts.ready
+    const html2canvas = (await import('html2canvas')).default
+    const { clone, cleanup } = await this.cloneOffscreen(element, width)
+    try {
+      const canvas = await html2canvas(clone, { scale: 2, useCORS: true, width, windowWidth: width })
+      this.triggerDownload(canvas.toDataURL('image/png'), 'honor-board.png')
+    } finally {
+      cleanup()
+    }
+  }
+
+  async downloadPdf(element: HTMLElement, width: number): Promise<void> {
     await document.fonts.ready
     const html2canvas = (await import('html2canvas')).default
     const { jsPDF } = await import('jspdf')
+    const { clone, cleanup } = await this.cloneOffscreen(element, width)
+    try {
+      const canvas = await html2canvas(clone, { scale: 2, useCORS: true, width, windowWidth: width })
+      const imgData = canvas.toDataURL('image/png')
 
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true })
-    const imgData = canvas.toDataURL('image/png')
-
-    const orientation = canvas.width > canvas.height ? 'l' : 'p'
-    const pdf = new jsPDF({ orientation, unit: 'px', format: [canvas.width / 2, canvas.height / 2] })
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2)
-    pdf.save('honor-board.pdf')
+      const orientation = canvas.width > canvas.height ? 'l' : 'p'
+      const pdf = new jsPDF({ orientation, unit: 'px', format: [canvas.width / 2, canvas.height / 2] })
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2)
+      pdf.save('honor-board.pdf')
+    } finally {
+      cleanup()
+    }
   }
 
   async downloadHtml(element: HTMLElement): Promise<void> {
