@@ -3,9 +3,9 @@ import { FormsModule } from '@angular/forms'
 import { ButtonModule } from 'primeng/button'
 import { SelectModule } from 'primeng/select'
 import { MessageModule } from 'primeng/message'
-import { BoardService } from '../../core/board.service'
-import { buildTemplateXlsx } from '../../core/template-xlsx-builder'
-import { TEMPLATE_IDS, TEMPLATE_REGISTRY } from '../../core/templates'
+import { BoardService } from '@core/board.service'
+import { buildTemplateXlsx } from '@core/template-xlsx-builder'
+import { TEMPLATE_IDS, TEMPLATE_REGISTRY } from '@core/templates'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
 

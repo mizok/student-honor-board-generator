@@ -2,7 +2,7 @@ import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ExamResultBoardComponent } from './exam-result/exam-result-board.component';
 import { ClassRankingBoardComponent } from './class-ranking/class-ranking-board.component';
-import type { ExamResultData, ClassRankingData } from '../core/templates';
+import type { ExamResultData, ClassRankingData } from '@core/templates';
 
 @Component({
   selector: 'app-template-outlet',

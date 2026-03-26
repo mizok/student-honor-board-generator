@@ -14,7 +14,10 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "paths": {
+      "@core/*": ["src/app/core/*"]
+    }
   },
   "files": [],
   "references": [

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { BoardService } from './core/board.service'
+import { BoardService } from '@core/board.service'
 import { UploadComponent } from './features/upload/upload.component'
 import { PreviewComponent } from './features/preview/preview.component'
 

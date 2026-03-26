@@ -9,13 +9,13 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { BoardService } from '../../../core/board.service';
+import { BoardService } from '@core/board.service';
 import type {
   ExamResultData,
   ClassRankingData,
   ExamResultStudent,
   RankingEntry,
-} from '../../../core/templates';
+} from '@core/templates';
 
 @Component({
   selector: 'app-edit-drawer',

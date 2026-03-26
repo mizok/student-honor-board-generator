@@ -1,6 +1,6 @@
 import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type { ClassRankingData, RankingEntry } from '../../core/templates';
+import type { ClassRankingData, RankingEntry } from '@core/templates';
 
 @Component({
   selector: 'app-class-ranking-board',

@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type { ExamResultData } from '../../core/templates';
+import type { ExamResultData } from '@core/templates';
 
 @Component({
   selector: 'app-exam-result-board',
