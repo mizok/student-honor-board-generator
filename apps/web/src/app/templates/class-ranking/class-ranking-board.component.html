@@ -1,0 +1,68 @@
+<div class="board">
+  <div class="board__inner">
+
+    <!-- Hero header -->
+    <header class="board__hero">
+      @if (data().subtitle) {
+        <p class="board__eyebrow">{{ data().subtitle }}</p>
+      }
+      <h1 class="board__title">{{ data().title }}</h1>
+    </header>
+
+    <!-- School rankings section -->
+    @if (schoolByRank().size > 0) {
+      <section class="board__section">
+        <div class="board__section-header">
+          <div class="board__section-line"></div>
+          <div class="board__section-badge board__section-badge--gold">校排榮譽</div>
+          <div class="board__section-line"></div>
+        </div>
+        <p class="board__section-subtitle">SCHOOL RANKING</p>
+        <div class="board__cards board__cards--school">
+          @for (rank of schoolByRank().keys(); track rank) {
+            <article class="card">
+              <div class="card__head card__head--gold">校排{{ rankLabel(rank) }}</div>
+              <div class="card__body">
+                @for (entry of schoolByRank().get(rank)!; track $index) {
+                  <div class="card__entry">
+                    <span class="card__class">{{ entry.classNumber }}</span>
+                    <span class="card__name">{{ entry.studentName }}</span>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- Class rankings section -->
+    @if (classByRank().size > 0) {
+      <section class="board__section">
+        <div class="board__section-header">
+          <div class="board__section-line"></div>
+          <div class="board__section-badge board__section-badge--green">班排榮譽</div>
+          <div class="board__section-line"></div>
+        </div>
+        <p class="board__section-subtitle">CLASS RANKING</p>
+        <div class="board__cards board__cards--class">
+          @for (rank of classByRank().keys(); track rank) {
+            <article class="card">
+              <div class="card__head card__head--green">班排{{ rankLabel(rank) }}</div>
+              <div class="card__body">
+                @for (entry of classByRank().get(rank)!; track $index) {
+                  <div class="card__entry">
+                    <span class="card__class">{{ entry.classNumber }}</span>
+                    <span class="card__name">{{ entry.studentName }}</span>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      </section>
+    }
+
+    <footer class="board__footer">{{ data().title }}</footer>
+  </div>
+</div>
