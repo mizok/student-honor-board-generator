@@ -1,0 +1,185 @@
+.template-font-settings-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 4px;
+}
+
+.template-font-settings-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(194, 181, 161, 0.5);
+}
+
+.template-font-settings-dialog__eyebrow {
+  margin: 0 0 8px;
+  color: #8f7a60;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.template-font-settings-dialog__title {
+  margin: 0;
+  color: #24314f;
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.template-font-settings-dialog__description {
+  max-width: 520px;
+  margin: 10px 0 0;
+  color: #706454;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.template-font-settings-dialog__reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  white-space: nowrap;
+  border: 1px solid rgba(194, 181, 161, 0.72);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 252, 246, 0.92);
+  color: #6d5e4a;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease,
+    transform 120ms ease;
+}
+
+.template-font-settings-dialog__reset:hover {
+  transform: translateY(-1px);
+  border-color: rgba(172, 141, 85, 0.64);
+  background: rgba(255, 248, 233, 0.96);
+  color: #8a641f;
+}
+
+.template-font-settings-dialog__list {
+  display: grid;
+  gap: 14px;
+}
+
+.template-font-settings-dialog__card {
+  display: grid;
+  gap: 14px;
+  padding: 16px 18px 18px;
+  border: 1px solid rgba(207, 194, 174, 0.72);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 248, 229, 0.72), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(251, 247, 239, 0.98));
+  box-shadow: 0 14px 34px rgba(56, 44, 29, 0.08);
+}
+
+.template-font-settings-dialog__card-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.template-font-settings-dialog__card-topline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.template-font-settings-dialog__label {
+  margin: 0;
+  color: #24314f;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.template-font-settings-dialog__current {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(240, 230, 207, 0.8);
+  color: #8d6b2b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.template-font-settings-dialog__hint {
+  margin: 0;
+  color: #726659;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.template-font-settings-dialog__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.template-font-settings-dialog__option {
+  min-width: 54px;
+  border: 1px solid rgba(186, 172, 151, 0.76);
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #5a5147;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.template-font-settings-dialog__option:hover {
+  transform: translateY(-1px);
+  border-color: rgba(177, 136, 56, 0.65);
+  box-shadow: 0 10px 20px rgba(83, 61, 24, 0.08);
+}
+
+.template-font-settings-dialog__option--selected {
+  border-color: rgba(177, 136, 56, 0.92);
+  background: linear-gradient(180deg, #f4d88f, #e5bb5f);
+  color: #553a0e;
+  box-shadow: 0 12px 24px rgba(120, 84, 24, 0.16);
+}
+
+.template-font-settings-dialog__empty {
+  margin: 0;
+  padding: 28px 24px;
+  border: 1px dashed rgba(201, 188, 169, 0.9);
+  border-radius: 22px;
+  background: rgba(255, 252, 246, 0.92);
+  color: #77695a;
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .template-font-settings-dialog__header {
+    flex-direction: column;
+  }
+
+  .template-font-settings-dialog__card-topline {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -27,9 +27,12 @@ describe('TemplateBadgeComponent', () => {
     const html = existsSync(`${basePath}.html`) ? readFileSync(`${basePath}.html`, 'utf8') : ''
 
     expect(scss).toContain('--badge-height')
+    expect(scss).toContain('--template-badge-label-size')
     expect(html).toContain('<linearGradient')
     expect(ts).toContain('ResizeObserver')
     expect(html).toContain('[attr.viewBox]')
+    expect(ts).toContain("var(--template-primary-start")
+    expect(ts).toContain("var(--template-secondary-start")
   })
 
   it('does not rely on seam overlap pseudo elements anymore', () => {

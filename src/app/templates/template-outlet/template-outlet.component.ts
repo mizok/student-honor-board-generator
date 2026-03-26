@@ -16,6 +16,7 @@ import type { ExamResultData, ClassRankingData } from '@core/templates';
           [data]="$any(data())"
           [columns]="columns()"
           [maskNames]="maskNames()"
+          [styleVars]="styleVars()"
         />
       }
       @case ('class-ranking') {
@@ -23,6 +24,7 @@ import type { ExamResultData, ClassRankingData } from '@core/templates';
           [data]="$any(data())"
           [columns]="columns()"
           [maskNames]="maskNames()"
+          [styleVars]="styleVars()"
         />
       }
     }
@@ -33,6 +35,7 @@ export class TemplateOutletComponent implements OnDestroy {
   readonly data = input.required<ExamResultData | ClassRankingData>();
   readonly columns = input<number>(4);
   readonly maskNames = input<boolean>(false);
+  readonly styleVars = input<Record<string, string | number>>({});
 
   private readonly el = inject(ElementRef<HTMLElement>);
   private readonly onResize = () => this.updateContainerWidth();

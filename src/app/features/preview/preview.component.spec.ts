@@ -191,4 +191,10 @@ describe('PreviewComponent', () => {
 
     expect(component.exportItems.map(item => item.label)).toEqual(['下載 PNG'])
   })
+
+  it('forwards board.templateStyleVars into the template outlet binding', () => {
+    const template = readFileSync(resolve(__dirname, './preview.component.html'), 'utf8')
+
+    expect(template).toContain('[styleVars]="board.templateStyleVars()"')
+  })
 })

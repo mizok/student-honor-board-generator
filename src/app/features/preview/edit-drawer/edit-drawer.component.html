@@ -55,6 +55,31 @@
         styleClass="drawer__col-select"
       />
     </div>
+    @if (hasStyleSettings()) {
+      <div class="drawer__field">
+        <label class="drawer__label">版型設定</label>
+        <div class="drawer__setting-actions">
+          <p-button
+            label="字體設定"
+            size="small"
+            severity="secondary"
+            [outlined]="true"
+            styleClass="drawer__setting-button"
+            data-open-font-settings
+            (onClick)="openFontSettings()"
+          />
+          <p-button
+            label="主題設定"
+            size="small"
+            severity="secondary"
+            [outlined]="true"
+            styleClass="drawer__setting-button"
+            data-open-theme-settings
+            (onClick)="openThemeSettings()"
+          />
+        </div>
+      </div>
+    }
   </div>
 
   <!-- Exam Result mode -->

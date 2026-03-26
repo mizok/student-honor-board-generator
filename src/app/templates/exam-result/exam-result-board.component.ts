@@ -13,6 +13,7 @@ export class ExamResultBoardComponent {
   readonly data = input.required<ExamResultData>();
   readonly columns = input<number>(4);
   readonly maskNames = input<boolean>(false);
+  readonly styleVars = input<Record<string, string | number>>({});
 
   protected readonly gridStyle = computed(() => ({
     'grid-template-columns': `repeat(${this.columns()}, 1fr)`,

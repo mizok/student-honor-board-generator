@@ -66,16 +66,16 @@ export class TemplateBadgeComponent {
   protected readonly palette = computed<BadgePalette>(() => {
     if (this.tone() === 'green') {
       return {
-        gradientTop: '#c8dbcb',
-        gradientBottom: '#9cb59d',
-        textColor: '#274235',
+        gradientTop: 'var(--template-secondary-start, #c8dbcb)',
+        gradientBottom: 'var(--template-secondary-end, #9cb59d)',
+        textColor: 'var(--template-secondary-text, #274235)',
       };
     }
 
     return {
-      gradientTop: '#efca74',
-      gradientBottom: '#d9ac46',
-      textColor: '#4c3208',
+      gradientTop: 'var(--template-primary-start, #efca74)',
+      gradientBottom: 'var(--template-primary-end, #d9ac46)',
+      textColor: 'var(--template-primary-text, #4c3208)',
     };
   });
 

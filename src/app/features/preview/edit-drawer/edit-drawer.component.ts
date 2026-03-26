@@ -4,12 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { DragDropModule, moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { DrawerModule } from 'primeng/drawer';
 import { DialogModule } from 'primeng/dialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { ChipModule } from 'primeng/chip';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { BoardService } from '@core/board.service';
+import { TemplateFontSettingsDialogComponent } from '../template-font-settings-dialog/template-font-settings-dialog.component';
+import { TemplateThemeSettingsDialogComponent } from '../template-theme-settings-dialog/template-theme-settings-dialog.component';
+import type { TemplateStyleDialogData } from '../template-style-settings-dialog.types';
 import type {
   ExamResultData,
   ClassRankingData,
@@ -37,9 +41,11 @@ import type {
 })
 export class EditDrawerComponent {
   protected readonly board = inject(BoardService);
+  private readonly dialogService = inject(DialogService);
 
   protected readonly isExamResult = computed(() => this.board.templateId() === 'exam-result');
   protected readonly isClassRanking = computed(() => this.board.templateId() === 'class-ranking');
+  protected readonly hasStyleSettings = computed(() => this.board.templateStyleDefinition() !== null);
 
   protected readonly examData = computed(() =>
     this.isExamResult() ? (this.board.parsedData() as ExamResultData) : null,
@@ -61,6 +67,40 @@ export class EditDrawerComponent {
   protected readonly tagline = computed(
     () => (this.board.parsedData() as ExamResultData)?.tagline ?? '',
   );
+
+  protected openFontSettings(): void {
+    if (!this.board.templateStyleDefinition()) return;
+
+    const data: TemplateStyleDialogData = {
+      fontSettings: this.board.fontSettings(),
+      themeId: this.board.themeId(),
+    };
+
+    this.dialogService.open(TemplateFontSettingsDialogComponent, {
+      header: '字體設定',
+      modal: true,
+      width: '520px',
+      closable: true,
+      data,
+    });
+  }
+
+  protected openThemeSettings(): void {
+    if (!this.board.templateStyleDefinition()) return;
+
+    const data: TemplateStyleDialogData = {
+      fontSettings: this.board.fontSettings(),
+      themeId: this.board.themeId(),
+    };
+
+    this.dialogService.open(TemplateThemeSettingsDialogComponent, {
+      header: '主題設定',
+      modal: true,
+      width: '560px',
+      closable: true,
+      data,
+    });
+  }
 
   protected updateTitle(value: string): void {
     const data = this.board.parsedData();

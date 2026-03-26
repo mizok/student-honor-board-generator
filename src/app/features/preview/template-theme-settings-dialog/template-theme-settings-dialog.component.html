@@ -1,0 +1,53 @@
+<div class="template-theme-settings-dialog">
+  <div class="template-theme-settings-dialog__header">
+    <div>
+      <p class="template-theme-settings-dialog__eyebrow">{{ templateStyleDefinition()?.label }}</p>
+      <h2 class="template-theme-settings-dialog__title">
+        切換整體主題
+      </h2>
+      <p class="template-theme-settings-dialog__description">
+        從色彩、裝飾到卡片層次都會一起切換，保留模板原本的風格語言。
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="template-theme-settings-dialog__reset"
+      data-reset-theme
+      (click)="resetTheme()"
+    >
+      恢復預設
+    </button>
+  </div>
+
+  <div class="template-theme-settings-dialog__theme-list">
+    @for (theme of themes(); track theme.id) {
+      <button
+        type="button"
+        class="template-theme-settings-dialog__theme-card"
+        [class.template-theme-settings-dialog__theme-card--selected]="selectedThemeId() === theme.id"
+        [attr.aria-pressed]="selectedThemeId() === theme.id"
+        (click)="selectTheme(theme.id)"
+        data-theme-card
+      >
+        <div class="template-theme-settings-dialog__swatch-shell">
+          <div class="template-theme-settings-dialog__swatch-group" data-theme-swatch>
+            @for (color of theme.previewColors; track color) {
+              <span class="template-theme-settings-dialog__swatch" [style.backgroundColor]="color"></span>
+            }
+          </div>
+        </div>
+
+        <div class="template-theme-settings-dialog__content">
+          <div class="template-theme-settings-dialog__name-row">
+            <span class="template-theme-settings-dialog__name">{{ theme.label }}</span>
+            @if (selectedThemeId() === theme.id) {
+              <span class="template-theme-settings-dialog__selected-tag">已選取</span>
+            }
+          </div>
+          <p class="template-theme-settings-dialog__description">{{ theme.description }}</p>
+        </div>
+      </button>
+    }
+  </div>
+</div>

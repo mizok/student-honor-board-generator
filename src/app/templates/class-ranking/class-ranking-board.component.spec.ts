@@ -9,6 +9,8 @@ describe('ClassRankingBoardComponent badge styles', () => {
 
     expect(html).toContain('<app-template-badge')
     expect(ts).toContain('TemplateBadgeComponent')
+    expect(html).toContain('[ngStyle]="styleVars()"')
+    expect(ts).toContain("readonly styleVars = input<Record<string, string | number>>({});")
   })
 
   it('does not rely on clip-path for section badges', () => {
@@ -23,5 +25,15 @@ describe('ClassRankingBoardComponent badge styles', () => {
     expect(scss).not.toContain('&__section-badge-start')
     expect(scss).not.toContain('&__section-badge-body')
     expect(scss).not.toContain('&__section-badge-end')
+  })
+
+  it('uses template css variables for board, badge, and card styling', () => {
+    const scss = readFileSync(resolve(__dirname, './class-ranking-board.component.scss'), 'utf8')
+
+    expect(scss).toContain('--template-board-surface-soft')
+    expect(scss).toContain('--template-section-title-size')
+    expect(scss).toContain('--template-primary-start')
+    expect(scss).toContain('--template-secondary-start')
+    expect(scss).toContain('--template-pill-start')
   })
 })

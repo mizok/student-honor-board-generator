@@ -14,6 +14,7 @@ export class ClassRankingBoardComponent {
   readonly data = input.required<ClassRankingData>();
   readonly columns = input<number>(4);
   readonly maskNames = input<boolean>(false);
+  readonly styleVars = input<Record<string, string | number>>({});
 
   protected mask(name: string): string {
     if (!this.maskNames()) return name;

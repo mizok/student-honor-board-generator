@@ -134,6 +134,16 @@
     }
   }
 
+  &__setting-actions {
+    display: grid;
+    gap: 8px;
+  }
+
+  &__setting-button {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
   &__add {
     margin-top: 10px;
     width: 100%;

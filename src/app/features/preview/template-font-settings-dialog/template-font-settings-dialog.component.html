@@ -1,0 +1,55 @@
+<div class="template-font-settings-dialog">
+  <div class="template-font-settings-dialog__header">
+    <div>
+      <p class="template-font-settings-dialog__eyebrow">{{ templateLabel() }}</p>
+      <h2 class="template-font-settings-dialog__title">調整文字層級</h2>
+      <p class="template-font-settings-dialog__description">
+        針對每個文字角色挑選合適的尺寸，變更會立即套用到預覽。
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="template-font-settings-dialog__reset"
+      data-reset-font-settings
+      (click)="resetFontSettings()"
+    >
+      恢復預設
+    </button>
+  </div>
+
+  @if (fontRoles().length > 0) {
+    <div class="template-font-settings-dialog__list">
+      @for (role of fontRoles(); track role.id) {
+        <section class="template-font-settings-dialog__card" data-font-role-row>
+          <div class="template-font-settings-dialog__card-copy">
+            <div class="template-font-settings-dialog__card-topline">
+              <h3 class="template-font-settings-dialog__label">{{ role.label }}</h3>
+              <span class="template-font-settings-dialog__current">
+                {{ fontSettings()[role.id] ?? role.defaultValue }} px
+              </span>
+            </div>
+            <p class="template-font-settings-dialog__hint">{{ role.description }}</p>
+          </div>
+
+          <div class="template-font-settings-dialog__options">
+            @for (option of role.options; track option) {
+              <button
+                type="button"
+                class="template-font-settings-dialog__option"
+                [class.template-font-settings-dialog__option--selected]="isSelected(role.id, option)"
+                [attr.aria-pressed]="isSelected(role.id, option)"
+                data-font-role-option
+                (click)="selectFontSize(role.id, option)"
+              >
+                {{ option }}
+              </button>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  } @else {
+    <p class="template-font-settings-dialog__empty">目前這個版型沒有可調整的字體設定。</p>
+  }
+</div>
