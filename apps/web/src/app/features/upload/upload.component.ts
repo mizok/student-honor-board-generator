@@ -4,6 +4,7 @@ import { ButtonModule } from 'primeng/button'
 import { SelectModule } from 'primeng/select'
 import { MessageModule } from 'primeng/message'
 import { BoardService } from '../../core/board.service'
+import { buildTemplateXlsx } from '../../core/template-xlsx-builder'
 import { TEMPLATE_IDS, TEMPLATE_REGISTRY } from '@honor/shared-types'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024
@@ -27,6 +28,7 @@ export class UploadComponent {
   protected validationError = signal<string | null>(null)
   protected pendingFile = signal<File | null>(null)
   protected isDragging = signal(false)
+
 
   protected onDragOver(e: DragEvent): void {
     e.preventDefault()
@@ -53,6 +55,18 @@ export class UploadComponent {
     document.getElementById('file-input')?.click()
   }
 
+  protected downloadTemplate(): void {
+    const template = TEMPLATE_REGISTRY[this.selectedTemplateId()]
+    if (!template) return
+    const blob = buildTemplateXlsx(template)
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${template.label}-填寫範本.xlsx`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   private validateAndSet(file: File): void {
     const ext = file.name.split('.').pop()?.toLowerCase()
     if (!['csv', 'xlsx', 'xls'].includes(ext ?? '')) {
@@ -71,12 +85,7 @@ export class UploadComponent {
   protected async onSubmit(): Promise<void> {
     const file = this.pendingFile()
     if (!file) return
-    const buffer = await file.arrayBuffer()
-    const bytes = new Uint8Array(buffer)
-    let binary = ''
-    for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
-    const base64 = btoa(binary)
-    await this.board.parse(this.selectedTemplateId(), base64, file.name)
+    await this.board.parse(this.selectedTemplateId(), file)
   }
 
   protected get canSubmit(): boolean {

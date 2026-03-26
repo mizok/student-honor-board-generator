@@ -2,12 +2,34 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
     "sharedGlobals": []
   },
   "targetDefaults": {
-    "build": { "dependsOn": ["^build"], "inputs": ["default", "^default"], "cache": true },
-    "test": { "inputs": ["default", "^default"], "cache": true }
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "cache": true
+    },
+    "test": {
+      "inputs": [
+        "default",
+        "^default"
+      ],
+      "cache": true
+    }
   },
-  "workspaceLayout": { "appsDir": "apps", "libsDir": "packages" }
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "packages"
+  },
+  "analytics": true
 }

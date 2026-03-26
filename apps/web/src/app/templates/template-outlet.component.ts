@@ -11,10 +11,10 @@ import type { ExamResultData, ClassRankingData } from '@honor/shared-types'
   template: `
     @switch (templateId()) {
       @case ('exam-result') {
-        <app-exam-result-board [data]="$any(data())" />
+        <app-exam-result-board [data]="$any(data())" [columns]="columns()" />
       }
       @case ('class-ranking') {
-        <app-class-ranking-board [data]="$any(data())" />
+        <app-class-ranking-board [data]="$any(data())" [columns]="columns()" />
       }
     }
   `,
@@ -22,4 +22,5 @@ import type { ExamResultData, ClassRankingData } from '@honor/shared-types'
 export class TemplateOutletComponent {
   readonly templateId = input.required<string>()
   readonly data = input.required<ExamResultData | ClassRankingData>()
+  readonly columns = input<number>(4)
 }

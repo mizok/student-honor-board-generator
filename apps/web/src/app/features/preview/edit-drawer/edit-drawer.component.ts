@@ -5,13 +5,14 @@ import { DrawerModule } from 'primeng/drawer'
 import { ChipModule } from 'primeng/chip'
 import { ButtonModule } from 'primeng/button'
 import { InputTextModule } from 'primeng/inputtext'
+import { SelectButtonModule } from 'primeng/selectbutton'
 import { BoardService } from '../../../core/board.service'
 import type { ExamResultData, ClassRankingData, ExamResultStudent, RankingEntry } from '@honor/shared-types'
 
 @Component({
   selector: 'app-edit-drawer',
   standalone: true,
-  imports: [CommonModule, FormsModule, DrawerModule, ChipModule, ButtonModule, InputTextModule],
+  imports: [CommonModule, FormsModule, DrawerModule, ChipModule, ButtonModule, InputTextModule, SelectButtonModule],
   templateUrl: './edit-drawer.component.html',
   styleUrl: './edit-drawer.component.scss',
 })
@@ -31,6 +32,21 @@ export class EditDrawerComponent {
 
   protected editingIndex = signal<{ section: string; index: number } | null>(null)
   protected editBuffer = signal<Record<string, string>>({})
+
+  protected readonly columnOptions = [2, 3, 4, 5, 6].map(n => ({ label: String(n), value: n }))
+
+  protected readonly title = computed(() => this.board.parsedData()?.title ?? '')
+  protected readonly subtitle = computed(() => this.board.parsedData()?.subtitle ?? '')
+
+  protected updateTitle(value: string): void {
+    const data = this.board.parsedData()
+    if (data) this.board.parsedData.set({ ...data, title: value })
+  }
+
+  protected updateSubtitle(value: string): void {
+    const data = this.board.parsedData()
+    if (data) this.board.parsedData.set({ ...data, subtitle: value })
+  }
 
   protected startEdit(section: string, index: number, entry: Record<string, unknown>): void {
     this.editingIndex.set({ section, index })

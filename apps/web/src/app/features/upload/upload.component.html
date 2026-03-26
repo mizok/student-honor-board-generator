@@ -82,9 +82,19 @@
         </div>
       }
 
+      <!-- 下載範本 -->
+      <p-button
+        label="下載填寫範本"
+        severity="secondary"
+        [outlined]="true"
+        icon="pi pi-download"
+        (onClick)="downloadTemplate()"
+        styleClass="upload-card__template-btn"
+      />
+
       <!-- 送出按鈕 -->
       <p-button
-        label="開始解析"
+        label="產生榮譽榜"
         [disabled]="!canSubmit"
         [loading]="board.isLoading()"
         loadingIcon="pi pi-spin pi-spinner"

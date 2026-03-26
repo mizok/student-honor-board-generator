@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core'
+import { Component, computed, input } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import type { ExamResultData } from '@honor/shared-types'
 
@@ -11,4 +11,9 @@ import type { ExamResultData } from '@honor/shared-types'
 })
 export class ExamResultBoardComponent {
   readonly data = input.required<ExamResultData>()
+  readonly columns = input<number>(4)
+
+  protected readonly gridStyle = computed(() => ({
+    'grid-template-columns': `repeat(${this.columns()}, 1fr)`,
+  }))
 }

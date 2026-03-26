@@ -1,50 +1,46 @@
-import { HttpClient } from '@angular/common/http'
-import { computed, inject, Injectable, signal } from '@angular/core'
-import { firstValueFrom } from 'rxjs'
-
-import type { ClassRankingData, ExamResultData, ParseRequest, ParseResponse } from '@honor/shared-types'
-
-import { environment } from '../../environments/environment'
+import { Injectable, computed, signal } from '@angular/core'
+import { TEMPLATE_REGISTRY } from '@honor/shared-types'
+import type { ClassRankingData, ExamResultData } from '@honor/shared-types'
+import { parseFileToRows } from './file-parser'
 
 export type UiState = 'upload' | 'preview'
 
 @Injectable({ providedIn: 'root' })
 export class BoardService {
-  private readonly http = inject(HttpClient)
-
   readonly uiState = signal<UiState>('upload')
   readonly templateId = signal<string>('')
   readonly parsedData = signal<ExamResultData | ClassRankingData | null>(null)
+  readonly columns = signal(4)
   readonly drawerOpen = signal(false)
   readonly isLoading = signal(false)
   readonly errorMessage = signal<string | null>(null)
 
   readonly isInPreview = computed(() => this.uiState() === 'preview')
 
-  async parse(templateId: string, fileContent: string, fileName: string): Promise<ParseResponse> {
+  async parse(templateId: string, file: File): Promise<void> {
     this.isLoading.set(true)
     this.errorMessage.set(null)
 
-    const body: ParseRequest = { templateId, fileContent, fileName }
-
     try {
-      const response = await firstValueFrom(
-        this.http.post<ParseResponse>(`${environment.workerUrl}/api/parse`, body),
-      )
+      const template = TEMPLATE_REGISTRY[templateId]
+      if (!template) throw new Error(`未知的榮譽榜類型：${templateId}`)
 
-      if (response.success) {
-        this.templateId.set(templateId)
-        this.parsedData.set(response.data)
-        this.uiState.set('preview')
-      } else {
-        this.errorMessage.set(response.message)
+      const rows = await parseFileToRows(file)
+      const parsed = template.parseCsv(rows)
+      const result = template.schema.safeParse(parsed)
+
+      if (!result.success) {
+        const issues = result.error.issues
+          .map(i => `${i.path.join('.')}: ${i.message}`)
+          .join('；')
+        throw new Error(`資料格式不符合預期：${issues}`)
       }
 
-      return response
-    } catch {
-      const message = 'AI 服務暫時無法使用，請稍後再試'
-      this.errorMessage.set(message)
-      return { success: false, message }
+      this.templateId.set(templateId)
+      this.parsedData.set(result.data)
+      this.uiState.set('preview')
+    } catch (err) {
+      this.errorMessage.set(err instanceof Error ? err.message : '解析失敗，請確認檔案格式正確')
     } finally {
       this.isLoading.set(false)
     }
@@ -54,11 +50,12 @@ export class BoardService {
     this.uiState.set('upload')
     this.parsedData.set(null)
     this.templateId.set('')
+    this.columns.set(4)
     this.errorMessage.set(null)
     this.drawerOpen.set(false)
   }
 
   toggleDrawer(): void {
-    this.drawerOpen.update((value) => !value)
+    this.drawerOpen.update(v => !v)
   }
 }

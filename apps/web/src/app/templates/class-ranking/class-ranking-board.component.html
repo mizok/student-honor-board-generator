@@ -18,7 +18,7 @@
           <div class="board__section-line"></div>
         </div>
         <p class="board__section-subtitle">SCHOOL RANKING</p>
-        <div class="board__cards board__cards--school">
+        <div class="board__cards board__cards--school" [ngStyle]="cardsStyle()">
           @for (rank of schoolByRank().keys(); track rank) {
             <article class="card">
               <div class="card__head card__head--gold">校排{{ rankLabel(rank) }}</div>
@@ -45,7 +45,7 @@
           <div class="board__section-line"></div>
         </div>
         <p class="board__section-subtitle">CLASS RANKING</p>
-        <div class="board__cards board__cards--class">
+        <div class="board__cards board__cards--class" [ngStyle]="cardsStyle()">
           @for (rank of classByRank().keys(); track rank) {
             <article class="card">
               <div class="card__head card__head--green">班排{{ rankLabel(rank) }}</div>

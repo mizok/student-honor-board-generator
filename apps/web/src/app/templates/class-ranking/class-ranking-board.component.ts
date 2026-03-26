@@ -11,6 +11,11 @@ import type { ClassRankingData, RankingEntry } from '@honor/shared-types'
 })
 export class ClassRankingBoardComponent {
   readonly data = input.required<ClassRankingData>()
+  readonly columns = input<number>(4)
+
+  protected readonly cardsStyle = computed(() => ({
+    'grid-template-columns': `repeat(${this.columns()}, 1fr)`,
+  }))
 
   readonly schoolByRank = computed(() => this.groupByRank(this.data().schoolRankings))
   readonly classByRank = computed(() => this.groupByRank(this.data().classRankings))

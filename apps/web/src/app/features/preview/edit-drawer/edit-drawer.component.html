@@ -6,6 +6,30 @@
   [style]="{ width: '360px' }"
   header="編輯內容"
 >
+  <!-- 標題 / 副標題 -->
+  <div class="drawer__section">
+    <div class="drawer__section-title">基本資訊</div>
+    <div class="drawer__field">
+      <label class="drawer__label">榮譽榜標題</label>
+      <input pInputText [ngModel]="title()" (ngModelChange)="updateTitle($event)" class="drawer__input" />
+    </div>
+    <div class="drawer__field">
+      <label class="drawer__label">副標題</label>
+      <input pInputText [ngModel]="subtitle()" (ngModelChange)="updateSubtitle($event)" class="drawer__input" placeholder="（選填）" />
+    </div>
+    <div class="drawer__field">
+      <label class="drawer__label">欄數</label>
+      <p-selectbutton
+        [options]="columnOptions"
+        [ngModel]="board.columns()"
+        (ngModelChange)="board.columns.set($event)"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="drawer__col-select"
+      />
+    </div>
+  </div>
+
   <!-- Exam Result mode -->
   @if (isExamResult() && examData(); as data) {
     <div class="drawer__section">

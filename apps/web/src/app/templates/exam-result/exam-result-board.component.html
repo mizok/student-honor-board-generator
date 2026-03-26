@@ -11,7 +11,7 @@
     </header>
 
     <!-- Card grid -->
-    <div class="board__grid">
+    <div class="board__grid" [ngStyle]="gridStyle()">
       @for (student of data().students; track $index) {
         <div class="card">
           <div class="card__subject">{{ student.subject }}</div>
