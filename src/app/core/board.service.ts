@@ -11,6 +11,7 @@ export class BoardService {
   readonly templateId = signal<string>('');
   readonly parsedData = signal<ExamResultData | ClassRankingData | null>(null);
   readonly columns = signal(4);
+  readonly exportWidth = signal<number>(1024);
   readonly drawerOpen = signal(false);
   readonly maskNames = signal(false);
   readonly isLoading = signal(false);
