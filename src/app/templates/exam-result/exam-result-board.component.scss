@@ -109,6 +109,7 @@
     color: var(--ink);
     line-height: 1.1;
     margin: rw(6px) 0 rw(2px);
+    white-space: nowrap;
   }
 
   &__divider {
