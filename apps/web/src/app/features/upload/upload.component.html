@@ -1,0 +1,97 @@
+<div class="upload-page">
+
+  <!-- 裝飾性背景框線 -->
+  <div class="upload-page__border"></div>
+
+  <div class="upload-page__inner">
+
+    <!-- Hero -->
+    <header class="upload-page__hero">
+      <p class="upload-page__eyebrow">HONOR BOARD GENERATOR</p>
+      <h1 class="upload-page__title">榮譽榜產生器</h1>
+      <p class="upload-page__subtitle">上傳成績資料，自動產生精美榮譽榜</p>
+    </header>
+
+    <!-- 卡片 -->
+    <div class="upload-card">
+
+      <!-- 榮譽榜類型 -->
+      <div class="upload-card__field">
+        <label class="upload-card__label">榮譽榜類型</label>
+        <p-select
+          [options]="templateOptions"
+          [(ngModel)]="selectedTemplateId"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="upload-card__select"
+        />
+      </div>
+
+      <!-- 拖拉上傳區 -->
+      <div class="upload-card__field">
+        <label class="upload-card__label">上傳資料檔案</label>
+        <div
+          class="upload-drop"
+          [class.upload-drop--active]="isDragging()"
+          [class.upload-drop--filled]="!!pendingFile()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave()"
+          (drop)="onDrop($event)"
+          (click)="triggerFileInput()"
+        >
+          <input
+            id="file-input"
+            type="file"
+            accept=".csv,.xlsx,.xls"
+            class="upload-drop__input"
+            (change)="onFileInput($event)"
+          />
+
+          @if (pendingFile()) {
+            <div class="upload-drop__filled">
+              <i class="pi pi-file-excel upload-drop__icon upload-drop__icon--green"></i>
+              <span class="upload-drop__filename">{{ pendingFile()!.name }}</span>
+              <span class="upload-drop__hint">點擊可重新選擇</span>
+            </div>
+          } @else {
+            <div class="upload-drop__empty">
+              <i class="pi pi-cloud-upload upload-drop__icon"></i>
+              <span class="upload-drop__text">拖曳檔案至此，或點擊選擇</span>
+              <span class="upload-drop__hint">支援 .csv、.xlsx、.xls，最大 5 MB</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- 驗證錯誤 -->
+      @if (validationError()) {
+        <p-message severity="error" [text]="validationError()!" styleClass="upload-card__message" />
+      }
+
+      <!-- API 錯誤 -->
+      @if (board.errorMessage()) {
+        <div class="upload-card__api-error">
+          <p-message severity="warn" [text]="board.errorMessage()!" styleClass="upload-card__message" />
+          <p-button
+            label="重試"
+            severity="secondary"
+            size="small"
+            [loading]="board.isLoading()"
+            (onClick)="onSubmit()"
+          />
+        </div>
+      }
+
+      <!-- 送出按鈕 -->
+      <p-button
+        label="開始解析"
+        [disabled]="!canSubmit"
+        [loading]="board.isLoading()"
+        loadingIcon="pi pi-spin pi-spinner"
+        (onClick)="onSubmit()"
+        styleClass="upload-card__submit"
+      />
+
+    </div>
+  </div>
+</div>

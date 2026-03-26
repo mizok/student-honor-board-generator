@@ -1,8 +1,17 @@
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
+import { BoardService } from './core/board.service'
+import { UploadComponent } from './features/upload/upload.component'
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  template: '<p>載入中…</p>',
+  imports: [UploadComponent],
+  template: `
+    @if (board.uiState() === 'upload') {
+      <app-upload />
+    }
+  `,
 })
-export class AppComponent {}
+export class AppComponent {
+  protected readonly board = inject(BoardService)
+}
