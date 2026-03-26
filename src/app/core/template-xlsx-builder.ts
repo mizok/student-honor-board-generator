@@ -24,8 +24,9 @@ function cell(v: string, bold = false, bg?: string, fontColor = '000000', italic
  *   Row 1  – instruction banner
  *   Row 2  – title input row
  *   Row 3  – subtitle input row
- *   Row 4  – column headers (hint shown as second line within cell)
- *   Row 5+ – example data rows
+ *   Row 4  – optional extra metadata row (exam-result tagline)
+ *   Row 5  – column headers (hint shown as second line within cell)
+ *   Row 6+ – example data rows
  */
 export function buildTemplateXlsx(template: TemplateDefinition): Blob {
   const wb = XLSX.utils.book_new()
@@ -53,9 +54,21 @@ export function buildTemplateXlsx(template: TemplateDefinition): Blob {
     ws['!merges'].push({ s: { r: 2, c: 1 }, e: { r: 2, c: colCount - 1 } })
   }
 
-  // --- Row 4: column headers (with hint as second line) ---
+  const hasTaglineRow = template.id === 'exam-result'
+  const headerRowIndex = hasTaglineRow ? 4 : 3
+  const exampleRowStartIndex = headerRowIndex + 1
+
+  if (hasTaglineRow) {
+    ws['A4'] = cell('裝飾文字（選填）', false, COLOR.metaLabel)
+    ws['B4'] = cell('如：耀・煜・傳・會，可留空', false, 'FFFDE7', '999999', true)
+    if (colCount > 2) {
+      ws['!merges'].push({ s: { r: 3, c: 1 }, e: { r: 3, c: colCount - 1 } })
+    }
+  }
+
+  // --- Header row (with hint as second line) ---
   template.columns.forEach((col, i) => {
-    const addr = XLSX.utils.encode_cell({ r: 3, c: i })
+    const addr = XLSX.utils.encode_cell({ r: headerRowIndex, c: i })
     ws[addr] = {
       v: `${col.label}\n${col.hint}`,
       t: 's',
@@ -70,7 +83,7 @@ export function buildTemplateXlsx(template: TemplateDefinition): Blob {
   // --- Row 5+: example rows ---
   template.exampleRows.forEach((row, ri) => {
     colKeys.forEach((key, ci) => {
-      const addr = XLSX.utils.encode_cell({ r: 4 + ri, c: ci })
+      const addr = XLSX.utils.encode_cell({ r: exampleRowStartIndex + ri, c: ci })
       ws[addr] = cell(row[key] ?? '', false, COLOR.example)
     })
   })
@@ -82,12 +95,13 @@ export function buildTemplateXlsx(template: TemplateDefinition): Blob {
     { hpt: 36 }, // row 1: instruction
     { hpt: 24 }, // row 2: title
     { hpt: 24 }, // row 3: subtitle
-    { hpt: 40 }, // row 4: headers + hints (two lines)
+    ...(hasTaglineRow ? [{ hpt: 24 }] : []),
+    { hpt: 40 }, // header row: headers + hints (two lines)
   ]
 
   ws['!ref'] = XLSX.utils.encode_range({
     s: { r: 0, c: 0 },
-    e: { r: 3 + template.exampleRows.length, c: colCount - 1 },
+    e: { r: headerRowIndex + template.exampleRows.length, c: colCount - 1 },
   })
 
   XLSX.utils.book_append_sheet(wb, ws, '填寫資料')

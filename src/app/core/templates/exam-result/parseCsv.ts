@@ -2,6 +2,7 @@ import type { ExamResultData } from './schema';
 
 export const examResultCsvTemplate = `title,在此填入榮譽榜標題
 subtitle,副標題（選填，可留空）
+tagline,裝飾文字（選填，可留空）
 tag,school,studentName,description,highlight
 英文,鶯歌國中,王小明,建中,
 數學,鶯歌國中,李小華,師大附中,是
@@ -12,6 +13,7 @@ tag,school,studentName,description,highlight
  * Expected format:
  *   Row: title,<value>
  *   Row: subtitle,<value>
+ *   Row: tagline,<value>
  *   Header row: tag,school,studentName,description
  *   Data rows: <tag>,<school>,<studentName>,<description>
  */
