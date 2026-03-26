@@ -41,15 +41,6 @@
   }
 }
 
-:host ::ng-deep .preview__width-select {
-  .p-selectbutton {
-    .p-button {
-      padding: 4px 10px;
-      font-size: 12px;
-    }
-  }
-}
-
 @media (max-width: 768px) {
   .preview {
     // Drawer overlays the canvas on mobile instead of pushing it

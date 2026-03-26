@@ -62,7 +62,7 @@
     <div class="drawer__section">
       <div class="drawer__section-title">學生名單</div>
       <div cdkDropList (cdkDropListDropped)="reorder('students', $event)">
-        @for (student of data.students; track $index) {
+        @for (student of data.students; track student) {
           <div class="drawer__chip-row" cdkDrag>
             <div class="drawer__chip-wrapper">
               <span class="drawer__drag-handle" cdkDragHandle>
@@ -109,7 +109,7 @@
       <div class="drawer__section">
         <div class="drawer__section-title">{{ section.label }}</div>
         <div cdkDropList (cdkDropListDropped)="reorder(section.key, $event)">
-          @for (entry of $any(data)[section.key]; track $index) {
+          @for (entry of $any(data)[section.key]; track entry) {
             <div class="drawer__chip-row" cdkDrag>
               <div class="drawer__chip-wrapper">
                 <span class="drawer__drag-handle" cdkDragHandle>

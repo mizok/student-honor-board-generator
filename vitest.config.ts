@@ -4,6 +4,7 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   resolve: {
     alias: {
+      '@core': fileURLToPath(new URL('./src/app/core', import.meta.url)),
       '@honor/shared-types': fileURLToPath(
         new URL('./packages/shared-types/src/index.ts', import.meta.url),
       ),
@@ -11,6 +12,6 @@ export default defineConfig({
   },
   test: {
     environment: 'node',
-    setupFiles: ['./apps/web/src/test-setup.ts'],
+    setupFiles: ['./src/test-setup.ts'],
   },
 })
