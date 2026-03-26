@@ -1,0 +1,6 @@
+@use '../../../styles/responsive' as *;
+
+:host {
+  width: rw(1024px);
+  display: block;
+}

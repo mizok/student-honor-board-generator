@@ -166,7 +166,7 @@ import { <camel>CsvTemplate, parse<Camel>Csv } from './<id>/parseCsv'
 ```ts
 import { Component, computed, input } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import type { <Camel>Data } from '@honor/shared-types'
+import type { <Camel>Data } from '@core/templates'
 
 @Component({
   selector: 'app-<id>-board',
@@ -178,6 +178,7 @@ import type { <Camel>Data } from '@honor/shared-types'
 export class <Camel>BoardComponent {
   readonly data = input.required<<Camel>Data>()
   readonly columns = input<number>(4)
+  readonly maskNames = input<boolean>(false)
 
   protected readonly gridStyle = computed(() => ({
     'grid-template-columns': `repeat(${this.columns()}, 1fr)`,
@@ -198,21 +199,45 @@ HTML 風格參考 `exam-result`（卡片格狀）或 `class-ranking`（名次分
 
 ### 4-C SCSS（`<id>-board.component.scss`）
 
+**必須**在檔案最頂端引入 responsive 工具：
+```scss
+@use '../../../styles/responsive' as *;
+```
+
+**整個 SCSS 檔案中所有帶長度的數值，無一例外全部用 `rw(Xpx)`**，這包含但不限於：
+
+- `padding`、`margin`
+- `font-size`、`line-height`（若為 px 值）
+- `gap`、`row-gap`、`column-gap`
+- `width`、`height`、`min-width`、`min-height`、`max-width`
+- `border-width`、`border-radius`
+- `box-shadow` 的位移與模糊值（例：`0 rw(18px) rw(42px) ...`）
+- `inset`、`top`、`left` 等定位值
+- `letter-spacing`（若為 px 值）
+
+**禁止直接寫 `px`、`vw`、`rem` 硬值。** 唯一例外：`border-radius: 999px`（全圓角捷徑，不是設計尺寸）等語意上代表「無限大」的魔法數字，可保留。
+
+`rw()` 只接受 `px` 單位，傳入其他單位會編譯錯誤。
+
+`--container-width` 由 `TemplateOutletComponent` 統一管理，**board component SCSS 不需要也不應該**自行設定這個變數。
+
 必須定義：
-- `.board` 根容器：固定寬度、背景色、padding
-- `.board__header`：標題區
-- `.board__grid` 或 `.board__cards`：**不可**在 SCSS 寫死 `grid-template-columns`，交由 `[ngStyle]` 控制
-- `.card`：單一資料卡片樣式
+- `.board` 根容器：所有 padding、border、shadow 用 `rw()`
+- `.board__header`：所有字級、間距用 `rw()`
+- `.board__grid` 或 `.board__cards`：**不可**寫死 `grid-template-columns`，交由 `[ngStyle]` 控制；gap 用 `rw()`
+- `.card` 及所有子元素：每一個帶長度的屬性都用 `rw()`
+
+完成後，檢查整個 SCSS 檔案，**不應出現任何裸露的 `px` 數字**（除了上述無限大魔法數字）。
 
 ---
 
 ## Phase 5 — 接入 Template Outlet
 
-路徑：`src/app/templates/template-outlet.component.ts`
+路徑：`src/app/templates/template-outlet/template-outlet.component.ts`
 
 ### 5-A import
 ```ts
-import { <Camel>BoardComponent } from './<id>/<id>-board.component'
+import { <Camel>BoardComponent } from '../<id>/<id>-board.component'
 ```
 
 ### 5-B 加入 imports 陣列
@@ -221,7 +246,7 @@ import { <Camel>BoardComponent } from './<id>/<id>-board.component'
 ### 5-C 加入 template switch case
 ```html
 @case ('<id>') {
-  <app-<id>-board [data]="$any(data())" [columns]="columns()" />
+  <app-<id>-board [data]="$any(data())" [columns]="columns()" [maskNames]="maskNames()" />
 }
 ```
 
@@ -298,6 +323,7 @@ import { <Camel>BoardComponent } from './<id>/<id>-board.component'
 - [ ] `registry.ts`：`columns` 每個欄位都有 `key`、`label`、`hint`、`example`；`exampleRows` 至少 2 筆
 - [ ] `index.ts`：已 export 新 schema
 - [ ] Board component：`columns` input 存在；grid 容器使用 `[ngStyle]`，不寫死欄數
+- [ ] Board SCSS：整個檔案無裸露 `px` 數字（除 `999px` 等無限大語意值）；所有長度值皆用 `rw()`
 - [ ] Template outlet：import 正確；switch case 已加入
 - [ ] Edit drawer：三個方法（`saveEdit`、`deleteEntry`、`addEntry`）都有處理新 template；HTML 有對應 section
 
@@ -316,7 +342,7 @@ import { <Camel>BoardComponent } from './<id>/<id>-board.component'
 | Board TS | `src/app/templates/<id>/<id>-board.component.ts` |
 | Board HTML | `src/app/templates/<id>/<id>-board.component.html` |
 | Board SCSS | `src/app/templates/<id>/<id>-board.component.scss` |
-| Template outlet | `src/app/templates/template-outlet.component.ts` |
+| Template outlet | `src/app/templates/template-outlet/template-outlet.component.ts` |
 | Edit drawer TS | `src/app/features/preview/edit-drawer/edit-drawer.component.ts` |
 | Edit drawer HTML | `src/app/features/preview/edit-drawer/edit-drawer.component.html` |
 

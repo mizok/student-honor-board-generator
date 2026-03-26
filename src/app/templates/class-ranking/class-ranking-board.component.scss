@@ -1,18 +1,5 @@
 @use '../../../styles/responsive' as *;
 
-:host {
-  --container-width: 1vw;
-}
-
-:host(.board--fixed) {
-  font-size: 10.24px;
-  --container-width: 1rem;
-
-  .board {
-    min-width: 1024px;
-  }
-}
-
 .board {
   width: 100%;
   margin: 0 auto;
