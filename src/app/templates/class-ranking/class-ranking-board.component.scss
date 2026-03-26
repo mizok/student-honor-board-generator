@@ -127,7 +127,7 @@
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       &--school,
       &--class {
         grid-template-columns: 1fr;
@@ -145,95 +145,101 @@
   }
 }
 
-@media (max-width: 600px) {
-  .board {
-    &::before { inset: rw(10px); }
-    &::after  { inset: rw(16px); }
+:host(:not(.board--fixed)) {
+  @media (max-width: 768px) {
+    .board {
+      &::before {
+        inset: rw(10px);
+      }
+      &::after {
+        inset: rw(16px);
+      }
 
-    &__inner {
-      padding: rw(36px) rw(20px) rw(40px);
-    }
+      &__inner {
+        padding: rw(36px) rw(20px) rw(40px);
+      }
 
-    &__hero {
-      margin-bottom: rw(20px);
-    }
+      &__hero {
+        margin-bottom: rw(20px);
+      }
 
-    &__eyebrow {
-      font-size: rw(13px);
-      margin: 0 0 rw(8px);
-    }
+      &__eyebrow {
+        font-size: rw(13px);
+        margin: 0 0 rw(8px);
+      }
 
-    &__title {
-      font-size: rw(30px);
-    }
+      &__title {
+        font-size: rw(30px);
+      }
 
-    &__subtitle {
-      font-size: rw(14px);
-      margin: rw(10px) 0 0;
-    }
+      &__subtitle {
+        font-size: rw(14px);
+        margin: rw(10px) 0 0;
+      }
 
-    &__section {
-      margin-top: rw(28px);
-    }
+      &__section {
+        margin-top: rw(28px);
+      }
 
-    &__section-header {
-      gap: rw(12px);
-      margin-bottom: rw(10px);
-    }
+      &__section-header {
+        gap: rw(12px);
+        margin-bottom: rw(10px);
+      }
 
-    &__section-badge {
-      min-width: rw(180px);
-      font-size: rw(18px);
-      padding: rw(8px) rw(16px);
-    }
+      &__section-badge {
+        min-width: rw(180px);
+        font-size: rw(18px);
+        padding: rw(8px) rw(16px);
+      }
 
-    &__section-subtitle {
-      font-size: rw(13px);
-      margin: 0 0 rw(16px);
-    }
+      &__section-subtitle {
+        font-size: rw(13px);
+        margin: 0 0 rw(16px);
+      }
 
-    &__cards {
-      gap: rw(10px);
+      &__cards {
+        gap: rw(10px);
 
-      &--school,
-      &--class {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        &--school,
+        &--class {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      &__footer {
+        font-size: rw(13px);
+        margin-top: rw(28px);
       }
     }
 
-    &__footer {
-      font-size: rw(13px);
-      margin-top: rw(28px);
-    }
-  }
+    .card {
+      min-height: rw(160px);
 
-  .card {
-    min-height: rw(160px);
+      &__head {
+        font-size: rw(17px);
+        padding: rw(8px) rw(12px);
+      }
 
-    &__head {
-      font-size: rw(17px);
-      padding: rw(8px) rw(12px);
-    }
+      &__body {
+        padding: rw(10px);
+        gap: rw(8px);
+      }
 
-    &__body {
-      padding: rw(10px);
-      gap: rw(8px);
-    }
+      &__entry {
+        padding: rw(7px) rw(10px);
+        gap: rw(8px);
+        min-height: rw(44px);
+      }
 
-    &__entry {
-      padding: rw(7px) rw(10px);
-      gap: rw(8px);
-      min-height: rw(44px);
-    }
+      &__class {
+        min-width: rw(46px);
+        font-size: rw(13px);
+        padding: rw(3px) rw(6px);
+      }
 
-    &__class {
-      min-width: rw(46px);
-      font-size: rw(13px);
-      padding: rw(3px) rw(6px);
-    }
-
-    &__name {
-      font-size: rw(20px);
+      &__name {
+        font-size: rw(20px);
+      }
     }
   }
 }

@@ -56,7 +56,9 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  transition: box-shadow 0.15s, background 0.15s;
+  transition:
+    box-shadow 0.15s,
+    background 0.15s;
 
   &:hover {
     background: rgba(255, 255, 255, 0.82);
@@ -123,62 +125,64 @@
   }
 }
 
-@media (max-width: 600px) {
-  .board {
-    &__inner {
-      padding: rw(20px) rw(16px) rw(28px);
+:host(:not(.board--fixed)) {
+  @media (max-width: 768px) {
+    .board {
+      &__inner {
+        padding: rw(20px) rw(16px) rw(28px);
+      }
+
+      &__header {
+        margin-bottom: rw(24px);
+      }
+
+      &__header-bracket {
+        font-size: rw(12px);
+        margin-bottom: rw(8px);
+      }
+
+      &__title {
+        font-size: rw(26px);
+      }
+
+      &__subtitle {
+        font-size: rw(13px);
+        margin: rw(8px) 0 0;
+      }
+
+      &__grid {
+        gap: rw(8px);
+        grid-template-columns: repeat(auto-fill, minmax(rw(120px), 1fr));
+      }
     }
 
-    &__header {
-      margin-bottom: rw(24px);
-    }
+    .card {
+      padding: rw(10px) rw(8px) rw(12px);
+      gap: rw(3px);
 
-    &__header-bracket {
-      font-size: rw(12px);
-      margin-bottom: rw(8px);
-    }
+      &__tag {
+        font-size: rw(10px);
+        padding: rw(2px) rw(6px);
+      }
 
-    &__title {
-      font-size: rw(26px);
-    }
+      &__school {
+        font-size: rw(11px);
+        margin-top: rw(3px);
+      }
 
-    &__subtitle {
-      font-size: rw(13px);
-      margin: rw(8px) 0 0;
-    }
+      &__name {
+        font-size: rw(24px);
+        margin: rw(4px) 0 rw(2px);
+      }
 
-    &__grid {
-      gap: rw(8px);
-      grid-template-columns: repeat(auto-fill, minmax(rw(120px), 1fr));
-    }
-  }
+      &__divider {
+        width: rw(20px);
+        margin: rw(3px) auto;
+      }
 
-  .card {
-    padding: rw(10px) rw(8px) rw(12px);
-    gap: rw(3px);
-
-    &__tag {
-      font-size: rw(10px);
-      padding: rw(2px) rw(6px);
-    }
-
-    &__school {
-      font-size: rw(11px);
-      margin-top: rw(3px);
-    }
-
-    &__name {
-      font-size: rw(24px);
-      margin: rw(4px) 0 rw(2px);
-    }
-
-    &__divider {
-      width: rw(20px);
-      margin: rw(3px) auto;
-    }
-
-    &__description {
-      font-size: rw(11px);
+      &__description {
+        font-size: rw(11px);
+      }
     }
   }
 }

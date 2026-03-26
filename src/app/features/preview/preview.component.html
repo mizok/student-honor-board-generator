@@ -12,6 +12,14 @@
     />
     <div class="preview__toolbar-actions">
       <p-button
+        [icon]="board.fixedWidth() ? 'pi pi-lock' : 'pi pi-lock-open'"
+        [label]="board.fixedWidth() ? '固定寬度' : '自適應'"
+        severity="secondary"
+        size="small"
+        [outlined]="!board.fixedWidth()"
+        (onClick)="board.fixedWidth.update(v => !v)"
+      />
+      <p-button
         icon="pi pi-pencil"
         label="編輯內容"
         severity="secondary"
@@ -36,6 +44,7 @@
         [data]="data"
         [columns]="board.columns()"
         [maskNames]="board.maskNames()"
+        [fixedWidth]="board.fixedWidth()"
       />
     }
   </main>

@@ -8,11 +8,13 @@ import type { ClassRankingData, RankingEntry } from '@honor/shared-types'
   imports: [CommonModule],
   templateUrl: './class-ranking-board.component.html',
   styleUrl: './class-ranking-board.component.scss',
+  host: { '[class.board--fixed]': 'fixedWidth()' },
 })
 export class ClassRankingBoardComponent {
   readonly data = input.required<ClassRankingData>()
   readonly columns = input<number>(4)
   readonly maskNames = input<boolean>(false)
+  readonly fixedWidth = input<boolean>(false)
 
   protected mask(name: string): string {
     if (!this.maskNames()) return name

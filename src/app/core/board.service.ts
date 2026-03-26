@@ -13,6 +13,7 @@ export class BoardService {
   readonly columns = signal(4)
   readonly drawerOpen = signal(false)
   readonly maskNames = signal(false)
+  readonly fixedWidth = signal(false)
   readonly isLoading = signal(false)
   readonly errorMessage = signal<string | null>(null)
 
@@ -63,6 +64,7 @@ export class BoardService {
     this.errorMessage.set(null)
     this.drawerOpen.set(false)
     this.maskNames.set(false)
+    this.fixedWidth.set(false)
   }
 
   toggleDrawer(): void {
