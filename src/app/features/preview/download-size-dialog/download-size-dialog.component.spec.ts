@@ -6,6 +6,8 @@ import { DownloadSizeDialogComponent } from './download-size-dialog.component'
 describe('DownloadSizeDialogComponent', () => {
   let injector: EnvironmentInjector
   let component: DownloadSizeDialogComponent & {
+    actionLabel: () => string
+    actionCopy: () => string
     selectWidth: (width: number) => void
     confirm: () => void
     cancel: () => void
@@ -22,10 +24,11 @@ describe('DownloadSizeDialogComponent', () => {
         useValue: {
           data: {
             format: 'pdf',
+            action: 'download',
             width: 1024,
             widthOptions: [
-              { label: '800', value: 800 },
               { label: '1024', value: 1024 },
+              { label: '1280', value: 1280 },
             ],
           },
         },
@@ -52,5 +55,36 @@ describe('DownloadSizeDialogComponent', () => {
     component.cancel()
 
     expect(dialogRefStub.close).toHaveBeenCalledWith()
+  })
+
+  it('uses download wording by default', () => {
+    expect(component.actionLabel()).toBe('下載')
+    expect(component.actionCopy()).toContain('開始下載')
+  })
+
+  it('switches wording to share when opened for mobile png share', () => {
+    injector.destroy()
+    injector = createEnvironmentInjector([
+      {
+        provide: DynamicDialogConfig,
+        useValue: {
+          data: {
+            format: 'png',
+            action: 'share',
+            width: 1024,
+            widthOptions: [
+              { label: '1024', value: 1024 },
+              { label: '1280', value: 1280 },
+            ],
+          },
+        },
+      },
+      { provide: DynamicDialogRef, useValue: dialogRefStub },
+    ])
+
+    component = runInInjectionContext(injector, () => new DownloadSizeDialogComponent()) as typeof component
+
+    expect(component.actionLabel()).toBe('分享')
+    expect(component.actionCopy()).toContain('開始分享')
   })
 })

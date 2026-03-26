@@ -1,5 +1,5 @@
 <div class="download-size-dialog">
-  <p class="download-size-dialog__copy">請先選擇匯出尺寸，再開始下載。</p>
+  <p class="download-size-dialog__copy">{{ actionCopy() }}</p>
 
   <div class="download-size-dialog__field">
     <label class="download-size-dialog__label">輸出寬度</label>
@@ -15,6 +15,6 @@
 
   <div class="download-size-dialog__actions">
     <p-button label="取消" severity="secondary" [text]="true" (onClick)="cancel()" />
-    <p-button label="下載" (onClick)="confirm()" />
+    <p-button [label]="actionLabel()" (onClick)="confirm()" />
   </div>
 </div>

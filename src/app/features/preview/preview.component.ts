@@ -58,11 +58,16 @@ export class PreviewComponent {
     }
 
     const ref = this.dialogService.open(DownloadSizeDialogComponent, {
-      header: format === 'pdf' ? '下載 PDF' : '下載 PNG',
+      header: this.isMobileDevice && format === 'png'
+        ? '分享 PNG'
+        : format === 'pdf'
+          ? '下載 PDF'
+          : '下載 PNG',
       modal: true,
       width: '360px',
       closable: true,
       data: {
+        action: this.isMobileDevice && format === 'png' ? 'share' : 'download',
         format,
         width: this.board.exportWidth(),
         widthOptions: this.widthOptions,

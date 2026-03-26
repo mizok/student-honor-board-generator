@@ -150,6 +150,17 @@ describe('PreviewComponent', () => {
     createComponent(true)
 
     await component.download('png')
+
+    expect(dialogServiceStub.open).toHaveBeenCalledWith(
+      DownloadSizeDialogComponent,
+      expect.objectContaining({
+        header: '分享 PNG',
+        data: expect.objectContaining({
+          action: 'share',
+        }),
+      }),
+    )
+
     boardStub.exportWidth.set(1280)
 
     onClose$.next({ width: 1280 })
