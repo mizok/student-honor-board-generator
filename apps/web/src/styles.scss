@@ -1,0 +1,29 @@
+// PrimeNG Aura theme (v21 themes are configured via JS preset, no CSS path export)
+
+// Design tokens
+:root {
+  --bg: #f5efe5;
+  --paper: #fcf8f1;
+  --ink: #2f2418;
+  --muted: #7d6a55;
+  --gold-1: #e8be58;
+  --gold-2: #c9962d;
+  --gold-soft: #f6e7bf;
+  --green-1: #b8cfbe;
+  --green-2: #8faa94;
+  --green-soft: #edf4ef;
+
+  --font-serif: 'Noto Serif TC', 'PMingLiU', serif;
+  --font-sans: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: linear-gradient(180deg, #f7f2ea 0%, #efe6d9 100%);
+}
