@@ -107,6 +107,7 @@ student-honor-board-generator/
 ## Task 1: Monorepo Scaffold
 
 **Files:**
+
 - Create: `package.json`
 - Create: `nx.json`
 - Create: `tsconfig.base.json`
@@ -249,6 +250,7 @@ git commit -m "chore: init NX monorepo scaffold"
 ## Task 2: Shared Types Package
 
 **Files:**
+
 - Create: `packages/shared-types/package.json`
 - Create: `packages/shared-types/tsconfig.json`
 - Create: `packages/shared-types/src/index.ts`
@@ -286,8 +288,8 @@ git commit -m "chore: init NX monorepo scaffold"
 Create `packages/shared-types/src/templates/exam-result/schema.spec.ts`:
 
 ```ts
-import { describe, it, expect } from 'vitest'
-import { examResultSchema } from './schema'
+import { describe, it, expect } from 'vitest';
+import { examResultSchema } from './schema';
 
 describe('examResultSchema', () => {
   it('parses valid data', () => {
@@ -295,16 +297,16 @@ describe('examResultSchema', () => {
       title: '學測15級分風華',
       subtitle: '輝煌傳奇',
       students: [
-        { subject: '英文', juniorHighSchool: '淡江國中', studentName: '林○辰', seniorHighSchool: '北一女中' }
-      ]
-    }
-    expect(() => examResultSchema.parse(input)).not.toThrow()
-  })
+        { subject: '英文', school: '淡江國中', studentName: '林○辰', seniorHighSchool: '北一女中' },
+      ],
+    };
+    expect(() => examResultSchema.parse(input)).not.toThrow();
+  });
 
   it('rejects missing required fields', () => {
-    expect(() => examResultSchema.parse({ title: '測試' })).toThrow()
-  })
-})
+    expect(() => examResultSchema.parse({ title: '測試' })).toThrow();
+  });
+});
 ```
 
 - [ ] **Step 4: Run test — verify it fails**
@@ -320,23 +322,23 @@ Expected: FAIL — `examResultSchema` not defined yet.
 Create `packages/shared-types/src/templates/exam-result/schema.ts`:
 
 ```ts
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const examResultStudentSchema = z.object({
   subject: z.string(),
-  juniorHighSchool: z.string(),
+  school: z.string(),
   studentName: z.string(),
   seniorHighSchool: z.string(),
-})
+});
 
 export const examResultSchema = z.object({
   title: z.string(),
   subtitle: z.string().default(''),
   students: z.array(examResultStudentSchema),
-})
+});
 
-export type ExamResultStudent = z.infer<typeof examResultStudentSchema>
-export type ExamResultData = z.infer<typeof examResultSchema>
+export type ExamResultStudent = z.infer<typeof examResultStudentSchema>;
+export type ExamResultData = z.infer<typeof examResultSchema>;
 ```
 
 - [ ] **Step 6: Run test — verify it passes**
@@ -352,23 +354,23 @@ Expected: PASS
 Create `packages/shared-types/src/templates/class-ranking/schema.ts`:
 
 ```ts
-import { z } from 'zod'
+import { z } from 'zod';
 
 export const rankingEntrySchema = z.object({
   rank: z.number().int().positive(),
   classNumber: z.string(),
   studentName: z.string(),
-})
+});
 
 export const classRankingSchema = z.object({
   title: z.string(),
   subtitle: z.string().default(''),
   schoolRankings: z.array(rankingEntrySchema),
   classRankings: z.array(rankingEntrySchema),
-})
+});
 
-export type RankingEntry = z.infer<typeof rankingEntrySchema>
-export type ClassRankingData = z.infer<typeof classRankingSchema>
+export type RankingEntry = z.infer<typeof rankingEntrySchema>;
+export type ClassRankingData = z.infer<typeof classRankingSchema>;
 ```
 
 - [ ] **Step 8: Create Gemini prompts**
@@ -386,7 +388,7 @@ export const examResultPrompt = `
   "students": [
     {
       "subject": "科目（如英文、數學、社會、自然）",
-      "juniorHighSchool": "國中名稱",
+      "school": "國中名稱",
       "studentName": "學生姓名",
       "seniorHighSchool": "錄取高中名稱"
     }
@@ -399,7 +401,7 @@ export const examResultPrompt = `
 - students 陣列不可為空
 
 CSV 資料如下：
-`.trim()
+`.trim();
 ```
 
 Create `packages/shared-types/src/templates/class-ranking/prompt.ts`:
@@ -426,7 +428,7 @@ export const classRankingPrompt = `
 - classRankings 與 schoolRankings 可以其中一個為空陣列，但不可兩者都空
 
 CSV 資料如下：
-`.trim()
+`.trim();
 ```
 
 - [ ] **Step 9: Create template registry**
@@ -434,17 +436,17 @@ CSV 資料如下：
 Create `packages/shared-types/src/templates/registry.ts`:
 
 ```ts
-import { ZodSchema } from 'zod'
-import { examResultSchema } from './exam-result/schema'
-import { examResultPrompt } from './exam-result/prompt'
-import { classRankingSchema } from './class-ranking/schema'
-import { classRankingPrompt } from './class-ranking/prompt'
+import { ZodSchema } from 'zod';
+import { examResultSchema } from './exam-result/schema';
+import { examResultPrompt } from './exam-result/prompt';
+import { classRankingSchema } from './class-ranking/schema';
+import { classRankingPrompt } from './class-ranking/prompt';
 
 export interface TemplateDefinition {
-  readonly id: string
-  readonly label: string
-  readonly schema: ZodSchema
-  readonly prompt: string
+  readonly id: string;
+  readonly label: string;
+  readonly schema: ZodSchema;
+  readonly prompt: string;
 }
 
 export const TEMPLATE_REGISTRY: Readonly<Record<string, TemplateDefinition>> = {
@@ -460,9 +462,9 @@ export const TEMPLATE_REGISTRY: Readonly<Record<string, TemplateDefinition>> = {
     schema: classRankingSchema,
     prompt: classRankingPrompt,
   },
-}
+};
 
-export const TEMPLATE_IDS = Object.keys(TEMPLATE_REGISTRY) as (keyof typeof TEMPLATE_REGISTRY)[]
+export const TEMPLATE_IDS = Object.keys(TEMPLATE_REGISTRY) as (keyof typeof TEMPLATE_REGISTRY)[];
 ```
 
 - [ ] **Step 10: Create API types**
@@ -470,26 +472,26 @@ export const TEMPLATE_IDS = Object.keys(TEMPLATE_REGISTRY) as (keyof typeof TEMP
 Create `packages/shared-types/src/api.ts`:
 
 ```ts
-import type { ExamResultData } from './templates/exam-result/schema'
-import type { ClassRankingData } from './templates/class-ranking/schema'
+import type { ExamResultData } from './templates/exam-result/schema';
+import type { ClassRankingData } from './templates/class-ranking/schema';
 
 export interface ParseRequest {
-  readonly templateId: string
-  readonly fileContent: string  // base64-encoded
-  readonly fileName: string
+  readonly templateId: string;
+  readonly fileContent: string; // base64-encoded
+  readonly fileName: string;
 }
 
 export type ParseSuccessResponse = {
-  readonly success: true
-  readonly data: ExamResultData | ClassRankingData
-}
+  readonly success: true;
+  readonly data: ExamResultData | ClassRankingData;
+};
 
 export type ParseFailureResponse = {
-  readonly success: false
-  readonly message: string
-}
+  readonly success: false;
+  readonly message: string;
+};
 
-export type ParseResponse = ParseSuccessResponse | ParseFailureResponse
+export type ParseResponse = ParseSuccessResponse | ParseFailureResponse;
 ```
 
 - [ ] **Step 11: Create barrel export**
@@ -497,10 +499,10 @@ export type ParseResponse = ParseSuccessResponse | ParseFailureResponse
 Create `packages/shared-types/src/index.ts`:
 
 ```ts
-export * from './api'
-export * from './templates/registry'
-export * from './templates/exam-result/schema'
-export * from './templates/class-ranking/schema'
+export * from './api';
+export * from './templates/registry';
+export * from './templates/exam-result/schema';
+export * from './templates/class-ranking/schema';
 ```
 
 - [ ] **Step 12: Commit**
@@ -515,6 +517,7 @@ git commit -m "feat(shared-types): add template registry, schemas, prompts, and 
 ## Task 3: Worker Scaffold
 
 **Files:**
+
 - Create: `apps/worker/package.json`
 - Create: `apps/worker/tsconfig.json`
 - Create: `apps/worker/wrangler.toml`
@@ -606,41 +609,44 @@ cp apps/worker/.dev.vars.example apps/worker/.dev.vars
 - [ ] **Step 6: Create `apps/worker/src/index.ts`**
 
 ```ts
-import { Hono } from 'hono'
-import { cors } from 'hono/cors'
-import { logger } from 'hono/logger'
-import parseRoute from './routes/parse'
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { logger } from 'hono/logger';
+import parseRoute from './routes/parse';
 
 export type Bindings = {
-  ENVIRONMENT: string
-  WEB_URL: string
-  GEMINI_API_KEY: string
-}
+  ENVIRONMENT: string;
+  WEB_URL: string;
+  GEMINI_API_KEY: string;
+};
 
-export type AppEnv = { Bindings: Bindings }
+export type AppEnv = { Bindings: Bindings };
 
-const app = new Hono<AppEnv>()
+const app = new Hono<AppEnv>();
 
-app.use('*', logger())
-app.use('*', cors({
-  origin: (origin, c) => {
-    const webUrl = c.env?.WEB_URL ?? 'http://localhost:4200'
-    const allowed = [webUrl, 'http://localhost:4200']
-    return allowed.includes(origin) ? origin : null
-  },
-  allowMethods: ['POST', 'GET', 'OPTIONS'],
-  allowHeaders: ['Content-Type'],
-}))
+app.use('*', logger());
+app.use(
+  '*',
+  cors({
+    origin: (origin, c) => {
+      const webUrl = c.env?.WEB_URL ?? 'http://localhost:4200';
+      const allowed = [webUrl, 'http://localhost:4200'];
+      return allowed.includes(origin) ? origin : null;
+    },
+    allowMethods: ['POST', 'GET', 'OPTIONS'],
+    allowHeaders: ['Content-Type'],
+  }),
+);
 
-app.get('/health', (c) => c.json({ status: 'ok' }))
-app.route('/api/parse', parseRoute)
+app.get('/health', (c) => c.json({ status: 'ok' }));
+app.route('/api/parse', parseRoute);
 
 app.onError((err, c) => {
-  console.error(err)
-  return c.json({ success: false, message: '伺服器發生錯誤，請稍後再試' }, 500)
-})
+  console.error(err);
+  return c.json({ success: false, message: '伺服器發生錯誤，請稍後再試' }, 500);
+});
 
-export default app
+export default app;
 ```
 
 - [ ] **Step 6: Start worker to verify it boots**
@@ -665,6 +671,7 @@ git commit -m "feat(worker): scaffold Hono worker with CORS"
 ## Task 4: Worker Parse Route
 
 **Files:**
+
 - Create: `apps/worker/src/lib/file-parser.ts`
 - Create: `apps/worker/src/lib/gemini.ts`
 - Create: `apps/worker/src/routes/parse.ts`
@@ -676,33 +683,33 @@ git commit -m "feat(worker): scaffold Hono worker with CORS"
 Create `apps/worker/src/lib/file-parser.spec.ts`:
 
 ```ts
-import { describe, it, expect } from 'vitest'
-import { parseFileToCsv } from './file-parser'
+import { describe, it, expect } from 'vitest';
+import { parseFileToCsv } from './file-parser';
 
 describe('parseFileToCsv', () => {
   it('decodes base64 CSV directly', () => {
-    const csv = '姓名,班級\n張三,801\n'
-    const base64 = Buffer.from(csv).toString('base64')
-    const result = parseFileToCsv(base64, 'data.csv')
-    expect(result).toBe(csv)
-  })
+    const csv = '姓名,班級\n張三,801\n';
+    const base64 = Buffer.from(csv).toString('base64');
+    const result = parseFileToCsv(base64, 'data.csv');
+    expect(result).toBe(csv);
+  });
 
   it('converts xlsx base64 to CSV string', () => {
     // This test uses a minimal valid xlsx (pre-generated base64)
     // The output should contain the header row
-    const result = parseFileToCsv(MINIMAL_XLSX_BASE64, 'data.xlsx')
-    expect(typeof result).toBe('string')
-    expect(result.length).toBeGreaterThan(0)
-  })
+    const result = parseFileToCsv(MINIMAL_XLSX_BASE64, 'data.xlsx');
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
 
   it('throws on unsupported extension', () => {
-    expect(() => parseFileToCsv('abc', 'data.pdf')).toThrow('不支援的檔案格式')
-  })
-})
+    expect(() => parseFileToCsv('abc', 'data.pdf')).toThrow('不支援的檔案格式');
+  });
+});
 
 // Minimal xlsx base64 (a real 1-cell xlsx encoded as base64)
 // Generate with: Buffer.from(require('xlsx').write(wb, {type:'buffer', bookType:'xlsx'})).toString('base64')
-const MINIMAL_XLSX_BASE64 = 'UEsDBBQAAAAIAA==' // placeholder — replace with real value in implementation
+const MINIMAL_XLSX_BASE64 = 'UEsDBBQAAAAIAA=='; // placeholder — replace with real value in implementation
 ```
 
 - [ ] **Step 2: Run test — verify it fails**
@@ -718,27 +725,27 @@ Expected: FAIL — module not found.
 Create `apps/worker/src/lib/file-parser.ts`:
 
 ```ts
-import * as XLSX from 'xlsx'
+import * as XLSX from 'xlsx';
 
 /**
  * Converts a base64-encoded CSV or Excel file to a plain CSV string.
  * Throws if the file extension is not supported.
  */
 export function parseFileToCsv(base64Content: string, fileName: string): string {
-  const ext = fileName.split('.').pop()?.toLowerCase()
+  const ext = fileName.split('.').pop()?.toLowerCase();
 
   if (ext === 'csv') {
-    return Buffer.from(base64Content, 'base64').toString('utf-8')
+    return Buffer.from(base64Content, 'base64').toString('utf-8');
   }
 
   if (ext === 'xlsx' || ext === 'xls') {
-    const buffer = Buffer.from(base64Content, 'base64')
-    const workbook = XLSX.read(buffer, { type: 'buffer' })
-    const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
-    return XLSX.utils.sheet_to_csv(firstSheet)
+    const buffer = Buffer.from(base64Content, 'base64');
+    const workbook = XLSX.read(buffer, { type: 'buffer' });
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    return XLSX.utils.sheet_to_csv(firstSheet);
   }
 
-  throw new Error(`不支援的檔案格式：.${ext}`)
+  throw new Error(`不支援的檔案格式：.${ext}`);
 }
 ```
 
@@ -755,17 +762,17 @@ Expected: PASS (the xlsx test may need a real base64 value — update it after v
 Create `apps/worker/src/lib/gemini.ts`:
 
 ```ts
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 /**
  * Sends a prompt to Gemini and returns the raw text response.
  * Throws on API errors.
  */
 export async function callGemini(apiKey: string, prompt: string): Promise<string> {
-  const genAI = new GoogleGenerativeAI(apiKey)
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
-  const result = await model.generateContent(prompt)
-  return result.response.text()
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  const result = await model.generateContent(prompt);
+  return result.response.text();
 }
 ```
 
@@ -774,70 +781,100 @@ export async function callGemini(apiKey: string, prompt: string): Promise<string
 Create `apps/worker/src/routes/parse.spec.ts`:
 
 ```ts
-import { describe, it, expect, vi } from 'vitest'
-import app from '../index'
+import { describe, it, expect, vi } from 'vitest';
+import app from '../index';
 
 // Mock gemini to avoid real API calls in tests
 vi.mock('../lib/gemini', () => ({
-  callGemini: vi.fn().mockResolvedValue(JSON.stringify({
-    title: '測試榜',
-    subtitle: '',
-    students: [
-      { subject: '英文', juniorHighSchool: '淡江國中', studentName: '林○辰', seniorHighSchool: '北一女中' }
-    ]
-  }))
-}))
+  callGemini: vi.fn().mockResolvedValue(
+    JSON.stringify({
+      title: '測試榜',
+      subtitle: '',
+      students: [
+        { subject: '英文', school: '淡江國中', studentName: '林○辰', seniorHighSchool: '北一女中' },
+      ],
+    }),
+  ),
+}));
 
 describe('POST /api/parse', () => {
-  const mockEnv = { GEMINI_API_KEY: 'test-key', WEB_URL: 'http://localhost:4200', ENVIRONMENT: 'test' }
+  const mockEnv = {
+    GEMINI_API_KEY: 'test-key',
+    WEB_URL: 'http://localhost:4200',
+    ENVIRONMENT: 'test',
+  };
 
   it('returns success with parsed data for valid CSV', async () => {
-    const csv = '姓名,科目,國中,高中\n林○辰,英文,淡江國中,北一女中\n'
-    const base64 = Buffer.from(csv).toString('base64')
+    const csv = '姓名,科目,國中,高中\n林○辰,英文,淡江國中,北一女中\n';
+    const base64 = Buffer.from(csv).toString('base64');
 
-    const res = await app.request('/api/parse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ templateId: 'exam-result', fileContent: base64, fileName: 'test.csv' })
-    }, mockEnv)
+    const res = await app.request(
+      '/api/parse',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId: 'exam-result',
+          fileContent: base64,
+          fileName: 'test.csv',
+        }),
+      },
+      mockEnv,
+    );
 
-    expect(res.status).toBe(200)
-    const body = await res.json() as any
-    expect(body.success).toBe(true)
-    expect(body.data.students).toHaveLength(1)
-  })
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as any;
+    expect(body.success).toBe(true);
+    expect(body.data.students).toHaveLength(1);
+  });
 
   it('returns failure when file is too large', async () => {
-    const largeContent = 'x'.repeat(7 * 1024 * 1024) // 7 MB base64 string
-    const res = await app.request('/api/parse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ templateId: 'exam-result', fileContent: largeContent, fileName: 'big.csv' })
-    }, mockEnv)
+    const largeContent = 'x'.repeat(7 * 1024 * 1024); // 7 MB base64 string
+    const res = await app.request(
+      '/api/parse',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId: 'exam-result',
+          fileContent: largeContent,
+          fileName: 'big.csv',
+        }),
+      },
+      mockEnv,
+    );
 
-    expect(res.status).toBe(200)
-    const body = await res.json() as any
-    expect(body.success).toBe(false)
-    expect(body.message).toContain('檔案')
-  })
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as any;
+    expect(body.success).toBe(false);
+    expect(body.message).toContain('檔案');
+  });
 
   it('returns failure when Gemini returns non-JSON', async () => {
-    const { callGemini } = await import('../lib/gemini')
-    vi.mocked(callGemini).mockResolvedValueOnce('找不到對應的欄位，請確認資料格式')
+    const { callGemini } = await import('../lib/gemini');
+    vi.mocked(callGemini).mockResolvedValueOnce('找不到對應的欄位，請確認資料格式');
 
-    const csv = '不相關,欄位\n值,值\n'
-    const base64 = Buffer.from(csv).toString('base64')
-    const res = await app.request('/api/parse', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ templateId: 'exam-result', fileContent: base64, fileName: 'test.csv' })
-    }, mockEnv)
+    const csv = '不相關,欄位\n值,值\n';
+    const base64 = Buffer.from(csv).toString('base64');
+    const res = await app.request(
+      '/api/parse',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          templateId: 'exam-result',
+          fileContent: base64,
+          fileName: 'test.csv',
+        }),
+      },
+      mockEnv,
+    );
 
-    const body = await res.json() as any
-    expect(body.success).toBe(false)
-    expect(body.message).toBeTruthy()
-  })
-})
+    const body = (await res.json()) as any;
+    expect(body.success).toBe(false);
+    expect(body.message).toBeTruthy();
+  });
+});
 ```
 
 - [ ] **Step 7: Run test — verify it fails**
@@ -852,76 +889,79 @@ Expected: FAIL — parse route not implemented.
 
 Create `apps/worker/src/routes/parse.ts`:
 
-```ts
-import { Hono } from 'hono'
-import type { AppEnv } from '../index'
-import { TEMPLATE_REGISTRY } from '@honor/shared-types'
-import { parseFileToCsv } from '../lib/file-parser'
-import { callGemini } from '../lib/gemini'
+````ts
+import { Hono } from 'hono';
+import type { AppEnv } from '../index';
+import { TEMPLATE_REGISTRY } from '@honor/shared-types';
+import { parseFileToCsv } from '../lib/file-parser';
+import { callGemini } from '../lib/gemini';
 
-const MAX_BODY_BYTES = 6.7 * 1024 * 1024 // 5 MB original × 1.33 base64 expansion
+const MAX_BODY_BYTES = 6.7 * 1024 * 1024; // 5 MB original × 1.33 base64 expansion
 
-const route = new Hono<AppEnv>()
+const route = new Hono<AppEnv>();
 
 route.post('/', async (c) => {
-  const body = await c.req.json<{ templateId?: string; fileContent?: string; fileName?: string }>()
-  const { templateId, fileContent, fileName } = body
+  const body = await c.req.json<{ templateId?: string; fileContent?: string; fileName?: string }>();
+  const { templateId, fileContent, fileName } = body;
 
   // Validate input presence
   if (!templateId || !fileContent || !fileName) {
-    return c.json({ success: false, message: '缺少必要欄位' }, 400)
+    return c.json({ success: false, message: '缺少必要欄位' }, 400);
   }
 
   // Validate template exists
-  const template = TEMPLATE_REGISTRY[templateId]
+  const template = TEMPLATE_REGISTRY[templateId];
   if (!template) {
-    return c.json({ success: false, message: `未知的榮譽榜類型：${templateId}` }, 400)
+    return c.json({ success: false, message: `未知的榮譽榜類型：${templateId}` }, 400);
   }
 
   // Guard: body size check (base64 is ~1.33x the original file)
   if (fileContent.length > MAX_BODY_BYTES) {
-    return c.json({ success: false, message: '檔案太大，請上傳 5 MB 以內的檔案' })
+    return c.json({ success: false, message: '檔案太大，請上傳 5 MB 以內的檔案' });
   }
 
   // Convert file to CSV text
-  let csvText: string
+  let csvText: string;
   try {
-    csvText = parseFileToCsv(fileContent, fileName)
+    csvText = parseFileToCsv(fileContent, fileName);
   } catch (err) {
-    return c.json({ success: false, message: err instanceof Error ? err.message : '檔案解析失敗' })
+    return c.json({ success: false, message: err instanceof Error ? err.message : '檔案解析失敗' });
   }
 
   // Call Gemini
-  let geminiResponse: string
+  let geminiResponse: string;
   try {
-    geminiResponse = await callGemini(c.env.GEMINI_API_KEY, `${template.prompt}\n\n${csvText}`)
+    geminiResponse = await callGemini(c.env.GEMINI_API_KEY, `${template.prompt}\n\n${csvText}`);
   } catch {
-    return c.json({ success: false, message: 'AI 服務暫時無法使用，請稍後再試' })
+    return c.json({ success: false, message: 'AI 服務暫時無法使用，請稍後再試' });
   }
 
   // Try to parse Gemini response as JSON
-  let parsed: unknown
+  let parsed: unknown;
   try {
     // Strip markdown code fences if present
-    const cleaned = geminiResponse.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
-    parsed = JSON.parse(cleaned)
+    const cleaned = geminiResponse
+      .replace(/^```(?:json)?\n?/, '')
+      .replace(/\n?```$/, '')
+      .trim();
+    parsed = JSON.parse(cleaned);
   } catch {
     // Gemini returned a text explanation instead of JSON
-    return c.json({ success: false, message: geminiResponse.trim() })
+    return c.json({ success: false, message: geminiResponse.trim() });
   }
 
   // Validate against Zod schema
-  const result = template.schema.safeParse(parsed)
+  const result = template.schema.safeParse(parsed);
   if (!result.success) {
-    const issues = result.error.issues.map(i => `${i.path.join('.')}: ${i.message}`).join('；')
-    return c.json({ success: false, message: `資料格式不符合預期：${issues}` })
+    const issues = result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('；');
+    return c.json({ success: false, message: `資料格式不符合預期：${issues}` });
   }
 
-  return c.json({ success: true, data: result.data })
-})
+  return c.json({ success: true, data: result.data });
+});
 
-export default route
-```
+export default route;
+````
 
 - [ ] **Step 9: Run tests — verify they pass**
 
@@ -955,6 +995,7 @@ git commit -m "feat(worker): implement parse route with Gemini + SheetJS + Zod v
 ## Task 5: Angular App Scaffold
 
 **Files:**
+
 - Create: `angular.json`
 - Create: `apps/web/tsconfig.json`
 - Create: `apps/web/tsconfig.app.json`
@@ -993,10 +1034,12 @@ git commit -m "feat(worker): implement parse route with Gemini + SheetJS + Zod v
       "configurations": {
         "production": {
           "outputHashing": "all",
-          "fileReplacements": [{
-            "replace": "apps/web/src/environments/environment.ts",
-            "with": "apps/web/src/environments/environment.production.ts"
-          }]
+          "fileReplacements": [
+            {
+              "replace": "apps/web/src/environments/environment.ts",
+              "with": "apps/web/src/environments/environment.production.ts"
+            }
+          ]
         },
         "development": { "optimization": false, "sourceMap": true }
       },
@@ -1042,17 +1085,16 @@ git commit -m "feat(worker): implement parse route with Gemini + SheetJS + Zod v
             "tsConfig": "apps/web/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [{ "glob": "**/*", "input": "apps/web/public" }],
-            "styles": [
-              "node_modules/primeicons/primeicons.css",
-              "apps/web/src/styles.scss"
-            ]
+            "styles": ["node_modules/primeicons/primeicons.css", "apps/web/src/styles.scss"]
           },
           "configurations": {
             "production": {
-              "fileReplacements": [{
-                "replace": "apps/web/src/environments/environment.ts",
-                "with": "apps/web/src/environments/environment.production.ts"
-              }],
+              "fileReplacements": [
+                {
+                  "replace": "apps/web/src/environments/environment.ts",
+                  "with": "apps/web/src/environments/environment.production.ts"
+                }
+              ],
               "outputHashing": "all"
             },
             "development": { "optimization": false, "sourceMap": true }
@@ -1080,18 +1122,17 @@ git commit -m "feat(worker): implement parse route with Gemini + SheetJS + Zod v
 - [ ] **Step 2: Create tsconfig files**
 
 `apps/web/tsconfig.json`:
+
 ```json
 {
   "extends": "../../tsconfig.base.json",
   "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.spec.json" }
-  ]
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.spec.json" }]
 }
 ```
 
 `apps/web/tsconfig.app.json`:
+
 ```json
 {
   "extends": "./tsconfig.json",
@@ -1102,6 +1143,7 @@ git commit -m "feat(worker): implement parse route with Gemini + SheetJS + Zod v
 ```
 
 `apps/web/tsconfig.spec.json`:
+
 ```json
 {
   "extends": "./tsconfig.json",
@@ -1115,18 +1157,21 @@ git commit -m "feat(worker): implement parse route with Gemini + SheetJS + Zod v
 ```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-  <meta charset="utf-8" />
-  <title>榮譽榜產生器</title>
-  <base href="/" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
-</head>
-<body>
-  <app-root></app-root>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>榮譽榜產生器</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
 </html>
 ```
 
@@ -1153,9 +1198,12 @@ git commit -m "feat(worker): implement parse route with Gemini + SheetJS + Zod v
   --font-sans: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
 }
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -1168,19 +1216,21 @@ html, body {
 - [ ] **Step 5: Create environments**
 
 `apps/web/src/environments/environment.ts`:
+
 ```ts
 export const environment = {
   production: false,
   workerUrl: 'http://localhost:8787',
-}
+};
 ```
 
 `apps/web/src/environments/environment.production.ts`:
+
 ```ts
 export const environment = {
   production: true,
   workerUrl: 'https://honor-board-worker.YOUR_SUBDOMAIN.workers.dev',
-}
+};
 ```
 
 > Replace `YOUR_SUBDOMAIN` with your Cloudflare Workers subdomain after first deploy.
@@ -1188,21 +1238,21 @@ export const environment = {
 - [ ] **Step 6: Create `apps/web/src/main.ts`**
 
 ```ts
-import { bootstrapApplication } from '@angular/platform-browser'
-import { AppComponent } from './app/app.component'
-import { appConfig } from './app/app.config'
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app/app.component';
+import { appConfig } from './app/app.config';
 
-bootstrapApplication(AppComponent, appConfig).catch(console.error)
+bootstrapApplication(AppComponent, appConfig).catch(console.error);
 ```
 
 - [ ] **Step 7: Create `app.config.ts`**
 
 ```ts
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core'
-import { provideRouter } from '@angular/router'
-import { provideHttpClient } from '@angular/common/http'
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async'
-import { routes } from './app.routes'
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -1211,23 +1261,23 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideAnimationsAsync(),
   ],
-}
+};
 ```
 
 - [ ] **Step 8: Create `app.routes.ts`**
 
 ```ts
-import { Routes } from '@angular/router'
+import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  { path: '', loadComponent: () => import('./app.component').then(m => m.AppComponent) }
-]
+  { path: '', loadComponent: () => import('./app.component').then((m) => m.AppComponent) },
+];
 ```
 
 - [ ] **Step 9: Create root `app.component.ts` (placeholder)**
 
 ```ts
-import { Component } from '@angular/core'
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -1257,6 +1307,7 @@ git commit -m "feat(web): scaffold Angular app with PrimeNG and environments"
 ## Task 6: Board Service (State Machine)
 
 **Files:**
+
 - Create: `apps/web/src/app/core/board.service.ts`
 - Test: `apps/web/src/app/core/board.service.spec.ts`
 
@@ -1267,59 +1318,61 @@ The service owns all app state using Angular Signals. It is the single source of
 Create `apps/web/src/app/core/board.service.spec.ts`:
 
 ```ts
-import { TestBed } from '@angular/core/testing'
-import { describe, it, expect, beforeEach } from 'vitest'
-import { BoardService } from './board.service'
-import { provideHttpClient } from '@angular/common/http'
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing'
+import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { BoardService } from './board.service';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('BoardService', () => {
-  let service: BoardService
-  let http: HttpTestingController
+  let service: BoardService;
+  let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BoardService, provideHttpClient(), provideHttpClientTesting()]
-    })
-    service = TestBed.inject(BoardService)
-    http = TestBed.inject(HttpTestingController)
-  })
+      providers: [BoardService, provideHttpClient(), provideHttpClientTesting()],
+    });
+    service = TestBed.inject(BoardService);
+    http = TestBed.inject(HttpTestingController);
+  });
 
   it('starts in upload state', () => {
-    expect(service.uiState()).toBe('upload')
-  })
+    expect(service.uiState()).toBe('upload');
+  });
 
   it('transitions to preview on successful parse', async () => {
     const mockData = {
-      title: '測試榜', subtitle: '', students: [
-        { subject: '英文', juniorHighSchool: '淡江國中', studentName: '林○辰', seniorHighSchool: '北一女中' }
-      ]
-    }
+      title: '測試榜',
+      subtitle: '',
+      students: [
+        { subject: '英文', school: '淡江國中', studentName: '林○辰', seniorHighSchool: '北一女中' },
+      ],
+    };
 
-    const promise = service.parse('exam-result', 'dGVzdA==', 'test.csv')
-    http.expectOne('/api/parse').flush({ success: true, data: mockData })
+    const promise = service.parse('exam-result', 'dGVzdA==', 'test.csv');
+    http.expectOne('/api/parse').flush({ success: true, data: mockData });
 
-    const result = await promise
-    expect(result.success).toBe(true)
-    expect(service.uiState()).toBe('preview')
-    expect(service.parsedData()).toEqual(mockData)
-  })
+    const result = await promise;
+    expect(result.success).toBe(true);
+    expect(service.uiState()).toBe('preview');
+    expect(service.parsedData()).toEqual(mockData);
+  });
 
   it('stays in upload state on failure', async () => {
-    const promise = service.parse('exam-result', 'dGVzdA==', 'test.csv')
-    http.expectOne('/api/parse').flush({ success: false, message: '錯誤訊息' })
+    const promise = service.parse('exam-result', 'dGVzdA==', 'test.csv');
+    http.expectOne('/api/parse').flush({ success: false, message: '錯誤訊息' });
 
-    const result = await promise
-    expect(result.success).toBe(false)
-    expect(service.uiState()).toBe('upload')
-  })
+    const result = await promise;
+    expect(result.success).toBe(false);
+    expect(service.uiState()).toBe('upload');
+  });
 
   it('resets to upload state', () => {
-    service.resetToUpload()
-    expect(service.uiState()).toBe('upload')
-    expect(service.parsedData()).toBeNull()
-  })
-})
+    service.resetToUpload();
+    expect(service.uiState()).toBe('upload');
+    expect(service.parsedData()).toBeNull();
+  });
+});
 ```
 
 - [ ] **Step 2: Run test — verify it fails**
@@ -1333,68 +1386,68 @@ Expected: FAIL — service not found.
 - [ ] **Step 3: Implement `board.service.ts`**
 
 ```ts
-import { Injectable, inject, signal, computed } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
-import { firstValueFrom } from 'rxjs'
-import { environment } from '../../environments/environment'
-import type { ParseRequest, ParseResponse } from '@honor/shared-types'
-import type { ExamResultData } from '@honor/shared-types'
-import type { ClassRankingData } from '@honor/shared-types'
+import { Injectable, inject, signal, computed } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../environments/environment';
+import type { ParseRequest, ParseResponse } from '@honor/shared-types';
+import type { ExamResultData } from '@honor/shared-types';
+import type { ClassRankingData } from '@honor/shared-types';
 
-export type UiState = 'upload' | 'preview'
+export type UiState = 'upload' | 'preview';
 
 @Injectable({ providedIn: 'root' })
 export class BoardService {
-  private readonly http = inject(HttpClient)
+  private readonly http = inject(HttpClient);
 
-  readonly uiState = signal<UiState>('upload')
-  readonly templateId = signal<string>('')
-  readonly parsedData = signal<ExamResultData | ClassRankingData | null>(null)
-  readonly drawerOpen = signal(false)
-  readonly isLoading = signal(false)
-  readonly errorMessage = signal<string | null>(null)
+  readonly uiState = signal<UiState>('upload');
+  readonly templateId = signal<string>('');
+  readonly parsedData = signal<ExamResultData | ClassRankingData | null>(null);
+  readonly drawerOpen = signal(false);
+  readonly isLoading = signal(false);
+  readonly errorMessage = signal<string | null>(null);
 
-  readonly isInPreview = computed(() => this.uiState() === 'preview')
+  readonly isInPreview = computed(() => this.uiState() === 'preview');
 
   async parse(templateId: string, fileContent: string, fileName: string): Promise<ParseResponse> {
-    this.isLoading.set(true)
-    this.errorMessage.set(null)
+    this.isLoading.set(true);
+    this.errorMessage.set(null);
 
-    const body: ParseRequest = { templateId, fileContent, fileName }
+    const body: ParseRequest = { templateId, fileContent, fileName };
 
     try {
       const response = await firstValueFrom(
-        this.http.post<ParseResponse>(`${environment.workerUrl}/api/parse`, body)
-      )
+        this.http.post<ParseResponse>(`${environment.workerUrl}/api/parse`, body),
+      );
 
       if (response.success) {
-        this.templateId.set(templateId)
-        this.parsedData.set(response.data)
-        this.uiState.set('preview')
+        this.templateId.set(templateId);
+        this.parsedData.set(response.data);
+        this.uiState.set('preview');
       } else {
-        this.errorMessage.set(response.message)
+        this.errorMessage.set(response.message);
       }
 
-      return response
+      return response;
     } catch {
-      const message = 'AI 服務暫時無法使用，請稍後再試'
-      this.errorMessage.set(message)
-      return { success: false, message }
+      const message = 'AI 服務暫時無法使用，請稍後再試';
+      this.errorMessage.set(message);
+      return { success: false, message };
     } finally {
-      this.isLoading.set(false)
+      this.isLoading.set(false);
     }
   }
 
   resetToUpload(): void {
-    this.uiState.set('upload')
-    this.parsedData.set(null)
-    this.templateId.set('')
-    this.errorMessage.set(null)
-    this.drawerOpen.set(false)
+    this.uiState.set('upload');
+    this.parsedData.set(null);
+    this.templateId.set('');
+    this.errorMessage.set(null);
+    this.drawerOpen.set(false);
   }
 
   toggleDrawer(): void {
-    this.drawerOpen.update(v => !v)
+    this.drawerOpen.update((v) => !v);
   }
 }
 ```
@@ -1419,6 +1472,7 @@ git commit -m "feat(web): add BoardService state machine with Signals"
 ## Task 7: Upload Component
 
 **Files:**
+
 - Create: `apps/web/src/app/features/upload/upload.component.ts`
 - Create: `apps/web/src/app/features/upload/upload.component.html`
 - Create: `apps/web/src/app/features/upload/upload.component.scss`
@@ -1426,68 +1480,76 @@ git commit -m "feat(web): add BoardService state machine with Signals"
 - [ ] **Step 1: Create `upload.component.ts`**
 
 ```ts
-import { Component, inject, signal } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { FormsModule } from '@angular/forms'
-import { SelectModule } from 'primeng/select'
-import { FileUploadModule, FileUploadHandlerEvent } from 'primeng/fileupload'
-import { ButtonModule } from 'primeng/button'
-import { MessageModule } from 'primeng/message'
-import { ProgressSpinnerModule } from 'primeng/progressspinner'
-import { BoardService } from '../../core/board.service'
-import { TEMPLATE_IDS, TEMPLATE_REGISTRY } from '@honor/shared-types'
+import { Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { SelectModule } from 'primeng/select';
+import { FileUploadModule, FileUploadHandlerEvent } from 'primeng/fileupload';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { BoardService } from '../../core/board.service';
+import { TEMPLATE_IDS, TEMPLATE_REGISTRY } from '@honor/shared-types';
 
-const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024 // 5 MB
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 @Component({
   selector: 'app-upload',
   standalone: true,
-  imports: [CommonModule, FormsModule, SelectModule, FileUploadModule, ButtonModule, MessageModule, ProgressSpinnerModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SelectModule,
+    FileUploadModule,
+    ButtonModule,
+    MessageModule,
+    ProgressSpinnerModule,
+  ],
   templateUrl: './upload.component.html',
   styleUrl: './upload.component.scss',
 })
 export class UploadComponent {
-  protected readonly board = inject(BoardService)
+  protected readonly board = inject(BoardService);
 
-  protected readonly templateOptions = TEMPLATE_IDS.map(id => ({
+  protected readonly templateOptions = TEMPLATE_IDS.map((id) => ({
     label: TEMPLATE_REGISTRY[id].label,
     value: id,
-  }))
+  }));
 
-  protected selectedTemplateId = signal<string>(TEMPLATE_IDS[0])
-  protected validationError = signal<string | null>(null)
-  protected pendingFile = signal<File | null>(null)
+  protected selectedTemplateId = signal<string>(TEMPLATE_IDS[0]);
+  protected validationError = signal<string | null>(null);
+  protected pendingFile = signal<File | null>(null);
 
   protected onFileSelect(event: FileUploadHandlerEvent): void {
-    const file = event.files[0]
-    if (!file) return
+    const file = event.files[0];
+    if (!file) return;
 
-    const ext = file.name.split('.').pop()?.toLowerCase()
+    const ext = file.name.split('.').pop()?.toLowerCase();
     if (!['csv', 'xlsx', 'xls'].includes(ext ?? '')) {
-      this.validationError.set('請上傳 .csv、.xlsx 或 .xls 格式的檔案')
-      return
+      this.validationError.set('請上傳 .csv、.xlsx 或 .xls 格式的檔案');
+      return;
     }
 
     if (file.size > MAX_FILE_SIZE_BYTES) {
-      this.validationError.set('檔案大小不可超過 5 MB')
-      return
+      this.validationError.set('檔案大小不可超過 5 MB');
+      return;
     }
 
-    this.validationError.set(null)
-    this.pendingFile.set(file)
+    this.validationError.set(null);
+    this.pendingFile.set(file);
   }
 
   protected async onSubmit(): Promise<void> {
-    const file = this.pendingFile()
-    if (!file || !this.selectedTemplateId()) return
+    const file = this.pendingFile();
+    if (!file || !this.selectedTemplateId()) return;
 
-    const buffer = await file.arrayBuffer()
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)))
-    await this.board.parse(this.selectedTemplateId(), base64, file.name)
+    const buffer = await file.arrayBuffer();
+    const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+    await this.board.parse(this.selectedTemplateId(), base64, file.name);
   }
 
   protected canSubmit = () =>
-    !!this.pendingFile() && !!this.selectedTemplateId() && !this.board.isLoading()
+    !!this.pendingFile() && !!this.selectedTemplateId() && !this.board.isLoading();
 }
 ```
 
@@ -1531,21 +1593,21 @@ export class UploadComponent {
 
     <!-- Validation error -->
     @if (validationError()) {
-      <p-message severity="error" [text]="validationError()!" />
+    <p-message severity="error" [text]="validationError()!" />
     }
 
     <!-- API error -->
     @if (board.errorMessage()) {
-      <div class="upload__error">
-        <p-message severity="warn" [text]="board.errorMessage()!" />
-        <p-button
-          label="重試"
-          severity="secondary"
-          size="small"
-          (onClick)="onSubmit()"
-          [disabled]="board.isLoading()"
-        />
-      </div>
+    <div class="upload__error">
+      <p-message severity="warn" [text]="board.errorMessage()!" />
+      <p-button
+        label="重試"
+        severity="secondary"
+        size="small"
+        (onClick)="onSubmit()"
+        [disabled]="board.isLoading()"
+      />
+    </div>
     }
 
     <!-- Submit -->
@@ -1617,7 +1679,9 @@ export class UploadComponent {
     letter-spacing: 0.06em;
   }
 
-  &__select { width: 100%; }
+  &__select {
+    width: 100%;
+  }
 
   &__error {
     display: flex;
@@ -1625,17 +1689,19 @@ export class UploadComponent {
     gap: 8px;
   }
 
-  &__submit { width: 100%; }
+  &__submit {
+    width: 100%;
+  }
 }
 ```
 
 - [ ] **Step 4: Update `app.component.ts` to use upload component**
 
 ```ts
-import { Component, inject } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { UploadComponent } from './features/upload/upload.component'
-import { BoardService } from './core/board.service'
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UploadComponent } from './features/upload/upload.component';
+import { BoardService } from './core/board.service';
 
 @Component({
   selector: 'app-root',
@@ -1648,7 +1714,7 @@ import { BoardService } from './core/board.service'
   `,
 })
 export class AppComponent {
-  protected readonly board = inject(BoardService)
+  protected readonly board = inject(BoardService);
 }
 ```
 
@@ -1659,6 +1725,7 @@ npx ng serve web --configuration=development
 ```
 
 Open `http://localhost:4200`. Verify:
+
 - Template dropdown shows two options
 - File picker opens on click
 - Files > 5 MB are rejected with an error message
@@ -1676,6 +1743,7 @@ git commit -m "feat(web): add upload component with file validation"
 ## Task 8: Preview Component + Layout
 
 **Files:**
+
 - Create: `apps/web/src/app/features/preview/preview.component.ts`
 - Create: `apps/web/src/app/features/preview/preview.component.html`
 - Create: `apps/web/src/app/features/preview/preview.component.scss`
@@ -1686,11 +1754,11 @@ git commit -m "feat(web): add upload component with file validation"
 Dynamically renders the correct board component based on `templateId`:
 
 ```ts
-import { Component, input } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { ExamResultBoardComponent } from './exam-result/exam-result-board.component'
-import { ClassRankingBoardComponent } from './class-ranking/class-ranking-board.component'
-import type { ExamResultData, ClassRankingData } from '@honor/shared-types'
+import { Component, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ExamResultBoardComponent } from './exam-result/exam-result-board.component';
+import { ClassRankingBoardComponent } from './class-ranking/class-ranking-board.component';
+import type { ExamResultData, ClassRankingData } from '@honor/shared-types';
 
 @Component({
   selector: 'app-template-outlet',
@@ -1708,37 +1776,44 @@ import type { ExamResultData, ClassRankingData } from '@honor/shared-types'
   `,
 })
 export class TemplateOutletComponent {
-  readonly templateId = input.required<string>()
-  readonly data = input.required<ExamResultData | ClassRankingData>()
+  readonly templateId = input.required<string>();
+  readonly data = input.required<ExamResultData | ClassRankingData>();
 }
 ```
 
 - [ ] **Step 2: Create `preview.component.ts`**
 
 ```ts
-import { Component, inject } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { ButtonModule } from 'primeng/button'
-import { SplitButtonModule } from 'primeng/splitbutton'
-import { ToastModule } from 'primeng/toast'
-import { MessageService } from 'primeng/api'
-import { BoardService } from '../../core/board.service'
-import { ExportService } from '../../core/export.service'
-import { TemplateOutletComponent } from '../../templates/template-outlet.component'
-import { EditDrawerComponent } from './edit-drawer/edit-drawer.component'
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ButtonModule } from 'primeng/button';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { BoardService } from '../../core/board.service';
+import { ExportService } from '../../core/export.service';
+import { TemplateOutletComponent } from '../../templates/template-outlet.component';
+import { EditDrawerComponent } from './edit-drawer/edit-drawer.component';
 
 @Component({
   selector: 'app-preview',
   standalone: true,
-  imports: [CommonModule, ButtonModule, SplitButtonModule, ToastModule, TemplateOutletComponent, EditDrawerComponent],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    SplitButtonModule,
+    ToastModule,
+    TemplateOutletComponent,
+    EditDrawerComponent,
+  ],
   providers: [MessageService],
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss',
 })
 export class PreviewComponent {
-  protected readonly board = inject(BoardService)
-  protected readonly exportService = inject(ExportService)
-  protected readonly messageService = inject(MessageService)
+  protected readonly board = inject(BoardService);
+  protected readonly exportService = inject(ExportService);
+  protected readonly messageService = inject(MessageService);
 
   protected readonly exportItems = [
     { label: '下載 PDF', icon: 'pi pi-file-pdf', command: () => this.download('pdf') },
@@ -1747,18 +1822,18 @@ export class PreviewComponent {
       label: '下載 HTML',
       icon: 'pi pi-code',
       tooltip: '下載的 HTML 檔案不含字型，在不同裝置上字型可能顯示不同',
-      command: () => this.download('html')
+      command: () => this.download('html'),
     },
-  ]
+  ];
 
   protected async download(format: 'html' | 'pdf' | 'png'): Promise<void> {
     try {
-      const el = document.getElementById('board-preview-target')!
-      if (format === 'html') await this.exportService.downloadHtml(el)
-      if (format === 'pdf') await this.exportService.downloadPdf(el)
-      if (format === 'png') await this.exportService.downloadPng(el)
+      const el = document.getElementById('board-preview-target')!;
+      if (format === 'html') await this.exportService.downloadHtml(el);
+      if (format === 'pdf') await this.exportService.downloadPdf(el);
+      if (format === 'png') await this.exportService.downloadPng(el);
     } catch {
-      this.messageService.add({ severity: 'error', summary: '下載失敗', detail: '請稍後再試' })
+      this.messageService.add({ severity: 'error', summary: '下載失敗', detail: '請稍後再試' });
     }
   }
 }
@@ -1800,10 +1875,7 @@ export class PreviewComponent {
   <!-- Board preview -->
   <div class="preview__canvas" id="board-preview-target">
     @if (board.parsedData(); as data) {
-      <app-template-outlet
-        [templateId]="board.templateId()"
-        [data]="data"
-      />
+    <app-template-outlet [templateId]="board.templateId()" [data]="data" />
     }
   </div>
 
@@ -1871,7 +1943,7 @@ export class PreviewComponent {
   `,
 })
 export class AppComponent {
-  protected readonly board = inject(BoardService)
+  protected readonly board = inject(BoardService);
 }
 ```
 
@@ -1887,6 +1959,7 @@ git commit -m "feat(web): add preview layout with toolbar and template outlet"
 ## Task 9: Edit Drawer
 
 **Files:**
+
 - Create: `apps/web/src/app/features/preview/edit-drawer/edit-drawer.component.ts`
 - Create: `apps/web/src/app/features/preview/edit-drawer/edit-drawer.component.html`
 - Create: `apps/web/src/app/features/preview/edit-drawer/edit-drawer.component.scss`
@@ -1894,15 +1967,20 @@ git commit -m "feat(web): add preview layout with toolbar and template outlet"
 - [ ] **Step 1: Create `edit-drawer.component.ts`**
 
 ```ts
-import { Component, inject, computed, signal } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import { FormsModule } from '@angular/forms'
-import { DrawerModule } from 'primeng/drawer'
-import { ChipModule } from 'primeng/chip'
-import { ButtonModule } from 'primeng/button'
-import { InputTextModule } from 'primeng/inputtext'
-import { BoardService } from '../../../core/board.service'
-import type { ExamResultData, ClassRankingData, ExamResultStudent, RankingEntry } from '@honor/shared-types'
+import { Component, inject, computed, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DrawerModule } from 'primeng/drawer';
+import { ChipModule } from 'primeng/chip';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { BoardService } from '../../../core/board.service';
+import type {
+  ExamResultData,
+  ClassRankingData,
+  ExamResultStudent,
+  RankingEntry,
+} from '@honor/shared-types';
 
 @Component({
   selector: 'app-edit-drawer',
@@ -1912,89 +1990,92 @@ import type { ExamResultData, ClassRankingData, ExamResultStudent, RankingEntry 
   styleUrl: './edit-drawer.component.scss',
 })
 export class EditDrawerComponent {
-  protected readonly board = inject(BoardService)
+  protected readonly board = inject(BoardService);
 
-  protected readonly isExamResult = computed(() => this.board.templateId() === 'exam-result')
-  protected readonly isClassRanking = computed(() => this.board.templateId() === 'class-ranking')
+  protected readonly isExamResult = computed(() => this.board.templateId() === 'exam-result');
+  protected readonly isClassRanking = computed(() => this.board.templateId() === 'class-ranking');
 
   protected readonly examData = computed(() =>
-    this.isExamResult() ? (this.board.parsedData() as ExamResultData) : null
-  )
+    this.isExamResult() ? (this.board.parsedData() as ExamResultData) : null,
+  );
 
   protected readonly rankingData = computed(() =>
-    this.isClassRanking() ? (this.board.parsedData() as ClassRankingData) : null
-  )
+    this.isClassRanking() ? (this.board.parsedData() as ClassRankingData) : null,
+  );
 
-  protected editingIndex = signal<{ section: string; index: number } | null>(null)
-  protected editBuffer = signal<Record<string, string>>({})
+  protected editingIndex = signal<{ section: string; index: number } | null>(null);
+  protected editBuffer = signal<Record<string, string>>({});
 
   protected startEdit(section: string, index: number, entry: Record<string, unknown>): void {
-    this.editingIndex.set({ section, index })
-    this.editBuffer.set(Object.fromEntries(Object.entries(entry).map(([k, v]) => [k, String(v)])))
+    this.editingIndex.set({ section, index });
+    this.editBuffer.set(Object.fromEntries(Object.entries(entry).map(([k, v]) => [k, String(v)])));
   }
 
   protected saveEdit(): void {
-    const pos = this.editingIndex()
-    if (!pos) return
+    const pos = this.editingIndex();
+    if (!pos) return;
 
-    const data = this.board.parsedData()
-    if (!data) return
+    const data = this.board.parsedData();
+    if (!data) return;
 
     if (this.isExamResult() && pos.section === 'students') {
-      const updated = { ...(data as ExamResultData) }
-      updated.students = [...updated.students]
-      updated.students[pos.index] = this.editBuffer() as unknown as ExamResultStudent
-      this.board.parsedData.set(updated)
+      const updated = { ...(data as ExamResultData) };
+      updated.students = [...updated.students];
+      updated.students[pos.index] = this.editBuffer() as unknown as ExamResultStudent;
+      this.board.parsedData.set(updated);
     }
 
     if (this.isClassRanking()) {
-      const updated = { ...(data as ClassRankingData) }
-      const key = pos.section as 'schoolRankings' | 'classRankings'
-      updated[key] = [...updated[key]]
+      const updated = { ...(data as ClassRankingData) };
+      const key = pos.section as 'schoolRankings' | 'classRankings';
+      updated[key] = [...updated[key]];
       updated[key][pos.index] = {
         ...this.editBuffer(),
         rank: Number(this.editBuffer()['rank']),
-      } as RankingEntry
-      this.board.parsedData.set(updated)
+      } as RankingEntry;
+      this.board.parsedData.set(updated);
     }
 
-    this.editingIndex.set(null)
+    this.editingIndex.set(null);
   }
 
   protected deleteEntry(section: string, index: number): void {
-    const data = this.board.parsedData()
-    if (!data) return
+    const data = this.board.parsedData();
+    if (!data) return;
 
     if (this.isExamResult() && section === 'students') {
-      const updated = { ...(data as ExamResultData) }
-      updated.students = updated.students.filter((_, i) => i !== index)
-      this.board.parsedData.set(updated)
+      const updated = { ...(data as ExamResultData) };
+      updated.students = updated.students.filter((_, i) => i !== index);
+      this.board.parsedData.set(updated);
     }
 
     if (this.isClassRanking()) {
-      const updated = { ...(data as ClassRankingData) }
-      const key = section as 'schoolRankings' | 'classRankings'
-      updated[key] = updated[key].filter((_, i) => i !== index)
-      this.board.parsedData.set(updated)
+      const updated = { ...(data as ClassRankingData) };
+      const key = section as 'schoolRankings' | 'classRankings';
+      updated[key] = updated[key].filter((_, i) => i !== index);
+      this.board.parsedData.set(updated);
     }
   }
 
   protected addEntry(section: string): void {
-    const data = this.board.parsedData()
-    if (!data) return
+    const data = this.board.parsedData();
+    if (!data) return;
 
     if (this.isExamResult()) {
-      const updated = { ...(data as ExamResultData) }
-      updated.students = [...updated.students, { subject: '', juniorHighSchool: '', studentName: '新學生', seniorHighSchool: '' }]
-      this.board.parsedData.set(updated)
+      const updated = { ...(data as ExamResultData) };
+      updated.students = [
+        ...updated.students,
+        { subject: '', school: '', studentName: '新學生', seniorHighSchool: '' },
+      ];
+      this.board.parsedData.set(updated);
     }
 
     if (this.isClassRanking()) {
-      const updated = { ...(data as ClassRankingData) }
-      const key = section as 'schoolRankings' | 'classRankings'
-      const nextRank = (updated[key].at(-1)?.rank ?? 0) + 1
-      updated[key] = [...updated[key], { rank: nextRank, classNumber: '', studentName: '新學生' }]
-      this.board.parsedData.set(updated)
+      const updated = { ...(data as ClassRankingData) };
+      const key = section as 'schoolRankings' | 'classRankings';
+      const nextRank = (updated[key].at(-1)?.rank ?? 0) + 1;
+      updated[key] = [...updated[key], { rank: nextRank, classNumber: '', studentName: '新學生' }];
+      this.board.parsedData.set(updated);
     }
   }
 }
@@ -2013,62 +2094,73 @@ export class EditDrawerComponent {
 >
   <!-- Exam Result mode -->
   @if (isExamResult() && examData(); as data) {
-    <div class="drawer__section">
-      <div class="drawer__section-title">學生名單</div>
-      @for (student of data.students; track $index) {
-        <div class="drawer__chip-row">
-          @if (editingIndex()?.section === 'students' && editingIndex()?.index === $index) {
-            <div class="drawer__inline-edit">
-              <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
-              <input pInputText [(ngModel)]="editBuffer()['subject']" placeholder="科目" />
-              <input pInputText [(ngModel)]="editBuffer()['juniorHighSchool']" placeholder="國中" />
-              <input pInputText [(ngModel)]="editBuffer()['seniorHighSchool']" placeholder="高中" />
-              <p-button label="儲存" size="small" (onClick)="saveEdit()" />
-            </div>
-          } @else {
-            <p-chip
-              [label]="student.studentName + ' · ' + student.subject"
-              [removable]="true"
-              (onRemove)="deleteEntry('students', $index)"
-              (onClick)="startEdit('students', $index, $any(student))"
-              styleClass="drawer__chip"
-            />
-          }
-        </div>
+  <div class="drawer__section">
+    <div class="drawer__section-title">學生名單</div>
+    @for (student of data.students; track $index) {
+    <div class="drawer__chip-row">
+      @if (editingIndex()?.section === 'students' && editingIndex()?.index === $index) {
+      <div class="drawer__inline-edit">
+        <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
+        <input pInputText [(ngModel)]="editBuffer()['subject']" placeholder="科目" />
+        <input pInputText [(ngModel)]="editBuffer()['school']" placeholder="國中" />
+        <input pInputText [(ngModel)]="editBuffer()['seniorHighSchool']" placeholder="高中" />
+        <p-button label="儲存" size="small" (onClick)="saveEdit()" />
+      </div>
+      } @else {
+      <p-chip
+        [label]="student.studentName + ' · ' + student.subject"
+        [removable]="true"
+        (onRemove)="deleteEntry('students', $index)"
+        (onClick)="startEdit('students', $index, $any(student))"
+        styleClass="drawer__chip"
+      />
       }
-      <p-button label="＋ 新增" size="small" severity="secondary" (onClick)="addEntry('students')" styleClass="drawer__add" />
     </div>
+    }
+    <p-button
+      label="＋ 新增"
+      size="small"
+      severity="secondary"
+      (onClick)="addEntry('students')"
+      styleClass="drawer__add"
+    />
+  </div>
   }
 
   <!-- Class Ranking mode -->
-  @if (isClassRanking() && rankingData(); as data) {
-    @for (section of [{ key: 'schoolRankings', label: '校排' }, { key: 'classRankings', label: '班排' }]; track section.key) {
-      <div class="drawer__section">
-        <div class="drawer__section-title">{{ section.label }}</div>
-        @for (entry of $any(data)[section.key]; track $index) {
-          <div class="drawer__chip-row">
-            @if (editingIndex()?.section === section.key && editingIndex()?.index === $index) {
-              <div class="drawer__inline-edit">
-                <input pInputText [(ngModel)]="editBuffer()['rank']" placeholder="名次" type="number" />
-                <input pInputText [(ngModel)]="editBuffer()['classNumber']" placeholder="班級" />
-                <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
-                <p-button label="儲存" size="small" (onClick)="saveEdit()" />
-              </div>
-            } @else {
-              <p-chip
-                [label]="'第' + entry.rank + '名 ' + entry.classNumber + ' ' + entry.studentName"
-                [removable]="true"
-                (onRemove)="deleteEntry(section.key, $index)"
-                (onClick)="startEdit(section.key, $index, $any(entry))"
-                styleClass="drawer__chip"
-              />
-            }
-          </div>
-        }
-        <p-button label="＋ 新增" size="small" severity="secondary" (onClick)="addEntry(section.key)" styleClass="drawer__add" />
+  @if (isClassRanking() && rankingData(); as data) { @for (section of [{ key: 'schoolRankings',
+  label: '校排' }, { key: 'classRankings', label: '班排' }]; track section.key) {
+  <div class="drawer__section">
+    <div class="drawer__section-title">{{ section.label }}</div>
+    @for (entry of $any(data)[section.key]; track $index) {
+    <div class="drawer__chip-row">
+      @if (editingIndex()?.section === section.key && editingIndex()?.index === $index) {
+      <div class="drawer__inline-edit">
+        <input pInputText [(ngModel)]="editBuffer()['rank']" placeholder="名次" type="number" />
+        <input pInputText [(ngModel)]="editBuffer()['classNumber']" placeholder="班級" />
+        <input pInputText [(ngModel)]="editBuffer()['studentName']" placeholder="姓名" />
+        <p-button label="儲存" size="small" (onClick)="saveEdit()" />
       </div>
+      } @else {
+      <p-chip
+        [label]="'第' + entry.rank + '名 ' + entry.classNumber + ' ' + entry.studentName"
+        [removable]="true"
+        (onRemove)="deleteEntry(section.key, $index)"
+        (onClick)="startEdit(section.key, $index, $any(entry))"
+        styleClass="drawer__chip"
+      />
+      }
+    </div>
     }
-  }
+    <p-button
+      label="＋ 新增"
+      size="small"
+      severity="secondary"
+      (onClick)="addEntry(section.key)"
+      styleClass="drawer__add"
+    />
+  </div>
+  } }
 </p-drawer>
 ```
 
@@ -2109,7 +2201,9 @@ export class EditDrawerComponent {
     background: var(--gold-soft);
     border-radius: 4px;
 
-    input { width: 100%; }
+    input {
+      width: 100%;
+    }
   }
 
   &__add {
@@ -2131,6 +2225,7 @@ git commit -m "feat(web): add edit drawer with chip-based entry editing"
 ## Task 10: Exam Result Board Component
 
 **Files:**
+
 - Create: `apps/web/src/app/templates/exam-result/exam-result-board.component.ts`
 - Create: `apps/web/src/app/templates/exam-result/exam-result-board.component.html`
 - Create: `apps/web/src/app/templates/exam-result/exam-result-board.component.scss`
@@ -2140,9 +2235,9 @@ The design should mirror the style of the reference image (第一張圖): beige/
 - [ ] **Step 1: Create `exam-result-board.component.ts`**
 
 ```ts
-import { Component, input } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import type { ExamResultData } from '@honor/shared-types'
+import { Component, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import type { ExamResultData } from '@honor/shared-types';
 
 @Component({
   selector: 'app-exam-result-board',
@@ -2152,7 +2247,7 @@ import type { ExamResultData } from '@honor/shared-types'
   styleUrl: './exam-result-board.component.scss',
 })
 export class ExamResultBoardComponent {
-  readonly data = input.required<ExamResultData>()
+  readonly data = input.required<ExamResultData>();
 }
 ```
 
@@ -2164,18 +2259,18 @@ export class ExamResultBoardComponent {
     <header class="board__header">
       <h1 class="board__title">{{ data().title }}</h1>
       @if (data().subtitle) {
-        <p class="board__subtitle">{{ data().subtitle }}</p>
+      <p class="board__subtitle">{{ data().subtitle }}</p>
       }
     </header>
 
     <div class="board__grid">
       @for (student of data().students; track $index) {
-        <div class="card">
-          <div class="card__subject">[ {{ student.subject }} ]</div>
-          <div class="card__school">{{ student.juniorHighSchool }}</div>
-          <div class="card__name">{{ student.studentName }}</div>
-          <div class="card__admitted">{{ student.seniorHighSchool }}</div>
-        </div>
+      <div class="card">
+        <div class="card__subject">[ {{ student.subject }} ]</div>
+        <div class="card__school">{{ student.school }}</div>
+        <div class="card__name">{{ student.studentName }}</div>
+        <div class="card__admitted">{{ student.seniorHighSchool }}</div>
+      </div>
       }
     </div>
   </div>
@@ -2272,6 +2367,7 @@ git commit -m "feat(web): add exam result board component"
 ## Task 11: Class Ranking Board Component
 
 **Files:**
+
 - Create: `apps/web/src/app/templates/class-ranking/class-ranking-board.component.ts`
 - Create: `apps/web/src/app/templates/class-ranking/class-ranking-board.component.html`
 - Create: `apps/web/src/app/templates/class-ranking/class-ranking-board.component.scss`
@@ -2281,9 +2377,9 @@ The design should mirror the existing HTML template from `/Users/mizokhuangmbp20
 - [ ] **Step 1: Create `class-ranking-board.component.ts`**
 
 ```ts
-import { Component, input, computed } from '@angular/core'
-import { CommonModule } from '@angular/common'
-import type { ClassRankingData, RankingEntry } from '@honor/shared-types'
+import { Component, input, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import type { ClassRankingData, RankingEntry } from '@honor/shared-types';
 
 @Component({
   selector: 'app-class-ranking-board',
@@ -2293,25 +2389,36 @@ import type { ClassRankingData, RankingEntry } from '@honor/shared-types'
   styleUrl: './class-ranking-board.component.scss',
 })
 export class ClassRankingBoardComponent {
-  readonly data = input.required<ClassRankingData>()
+  readonly data = input.required<ClassRankingData>();
 
   /** Groups entries by rank so each rank gets its own card */
-  readonly schoolByRank = computed(() => this.groupByRank(this.data().schoolRankings))
-  readonly classByRank = computed(() => this.groupByRank(this.data().classRankings))
+  readonly schoolByRank = computed(() => this.groupByRank(this.data().schoolRankings));
+  readonly classByRank = computed(() => this.groupByRank(this.data().classRankings));
 
   private groupByRank(entries: RankingEntry[]): Map<number, RankingEntry[]> {
-    const map = new Map<number, RankingEntry[]>()
+    const map = new Map<number, RankingEntry[]>();
     for (const entry of entries) {
-      const arr = map.get(entry.rank) ?? []
-      arr.push(entry)
-      map.set(entry.rank, arr)
+      const arr = map.get(entry.rank) ?? [];
+      arr.push(entry);
+      map.set(entry.rank, arr);
     }
-    return map
+    return map;
   }
 
   protected rankLabel(rank: number): string {
-    const labels: Record<number, string> = { 1: '第一名', 2: '第二名', 3: '第三名', 4: '第四名', 5: '第五名', 6: '第六名', 7: '第七名', 8: '第八名', 9: '第九名', 10: '第十名' }
-    return labels[rank] ?? `第${rank}名`
+    const labels: Record<number, string> = {
+      1: '第一名',
+      2: '第二名',
+      3: '第三名',
+      4: '第四名',
+      5: '第五名',
+      6: '第六名',
+      7: '第七名',
+      8: '第八名',
+      9: '第九名',
+      10: '第十名',
+    };
+    return labels[rank] ?? `第${rank}名`;
   }
 }
 ```
@@ -2328,54 +2435,54 @@ export class ClassRankingBoardComponent {
 
     <!-- School rankings -->
     @if (schoolByRank().size > 0) {
-      <section class="board__section">
-        <div class="board__section-header">
-          <div class="board__section-line"></div>
-          <div class="board__section-title board__section-title--gold">校排榮譽</div>
-          <div class="board__section-line"></div>
-        </div>
-        <div class="board__cards">
-          @for (rank of schoolByRank().keys(); track rank) {
-            <article class="card">
-              <div class="card__head card__head--gold">校排{{ rankLabel(rank) }}</div>
-              <div class="card__body">
-                @for (entry of schoolByRank().get(rank)!; track $index) {
-                  <div class="card__entry">
-                    <span class="card__class">{{ entry.classNumber }}</span>
-                    <span class="card__name">{{ entry.studentName }}</span>
-                  </div>
-                }
-              </div>
-            </article>
-          }
-        </div>
-      </section>
+    <section class="board__section">
+      <div class="board__section-header">
+        <div class="board__section-line"></div>
+        <div class="board__section-title board__section-title--gold">校排榮譽</div>
+        <div class="board__section-line"></div>
+      </div>
+      <div class="board__cards">
+        @for (rank of schoolByRank().keys(); track rank) {
+        <article class="card">
+          <div class="card__head card__head--gold">校排{{ rankLabel(rank) }}</div>
+          <div class="card__body">
+            @for (entry of schoolByRank().get(rank)!; track $index) {
+            <div class="card__entry">
+              <span class="card__class">{{ entry.classNumber }}</span>
+              <span class="card__name">{{ entry.studentName }}</span>
+            </div>
+            }
+          </div>
+        </article>
+        }
+      </div>
+    </section>
     }
 
     <!-- Class rankings -->
     @if (classByRank().size > 0) {
-      <section class="board__section">
-        <div class="board__section-header">
-          <div class="board__section-line"></div>
-          <div class="board__section-title board__section-title--green">班排榮譽</div>
-          <div class="board__section-line"></div>
-        </div>
-        <div class="board__cards">
-          @for (rank of classByRank().keys(); track rank) {
-            <article class="card">
-              <div class="card__head card__head--green">班排{{ rankLabel(rank) }}</div>
-              <div class="card__body">
-                @for (entry of classByRank().get(rank)!; track $index) {
-                  <div class="card__entry">
-                    <span class="card__class">{{ entry.classNumber }}</span>
-                    <span class="card__name">{{ entry.studentName }}</span>
-                  </div>
-                }
-              </div>
-            </article>
-          }
-        </div>
-      </section>
+    <section class="board__section">
+      <div class="board__section-header">
+        <div class="board__section-line"></div>
+        <div class="board__section-title board__section-title--green">班排榮譽</div>
+        <div class="board__section-line"></div>
+      </div>
+      <div class="board__cards">
+        @for (rank of classByRank().keys(); track rank) {
+        <article class="card">
+          <div class="card__head card__head--green">班排{{ rankLabel(rank) }}</div>
+          <div class="card__body">
+            @for (entry of classByRank().get(rank)!; track $index) {
+            <div class="card__entry">
+              <span class="card__class">{{ entry.classNumber }}</span>
+              <span class="card__name">{{ entry.studentName }}</span>
+            </div>
+            }
+          </div>
+        </article>
+        }
+      </div>
+    </section>
     }
 
     <div class="board__footer">{{ data().title }}</div>
@@ -2389,7 +2496,7 @@ export class ClassRankingBoardComponent {
 .board {
   width: min(1400px, 100%);
   margin: 0 auto;
-  background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.82));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.82));
   border: 1px solid rgba(101, 75, 43, 0.18);
   position: relative;
 
@@ -2401,9 +2508,16 @@ export class ClassRankingBoardComponent {
     pointer-events: none;
   }
 
-  &__inner { padding: 56px; position: relative; z-index: 1; }
+  &__inner {
+    padding: 56px;
+    position: relative;
+    z-index: 1;
+  }
 
-  &__hero { text-align: center; margin-bottom: 36px; }
+  &__hero {
+    text-align: center;
+    margin-bottom: 36px;
+  }
 
   &__eyebrow {
     margin: 0 0 8px;
@@ -2420,7 +2534,9 @@ export class ClassRankingBoardComponent {
     letter-spacing: 0.06em;
   }
 
-  &__section { margin-top: 36px; }
+  &__section {
+    margin-top: 36px;
+  }
 
   &__section-header {
     display: flex;
@@ -2444,8 +2560,14 @@ export class ClassRankingBoardComponent {
     font-weight: 700;
     clip-path: polygon(6% 0, 94% 0, 100% 50%, 94% 100%, 6% 100%, 0 50%);
 
-    &--gold { color: #4c3208; background: linear-gradient(180deg, #efca74 0%, #d9ac46 100%); }
-    &--green { color: #274235; background: linear-gradient(180deg, #c8dbcb 0%, #9cb59d 100%); }
+    &--gold {
+      color: #4c3208;
+      background: linear-gradient(180deg, #efca74 0%, #d9ac46 100%);
+    }
+    &--green {
+      color: #274235;
+      background: linear-gradient(180deg, #c8dbcb 0%, #9cb59d 100%);
+    }
   }
 
   &__cards {
@@ -2453,8 +2575,12 @@ export class ClassRankingBoardComponent {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 18px;
 
-    @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
-    @media (max-width: 500px) { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__footer {
@@ -2467,7 +2593,7 @@ export class ClassRankingBoardComponent {
 }
 
 .card {
-  background: rgba(255,255,255,0.62);
+  background: rgba(255, 255, 255, 0.62);
   border: 1px solid rgba(132, 101, 62, 0.14);
   min-height: 180px;
 
@@ -2480,15 +2606,20 @@ export class ClassRankingBoardComponent {
 
     &--gold {
       color: #513509;
-      background: linear-gradient(180deg, rgba(240,205,122,0.95), rgba(223,177,74,0.92));
+      background: linear-gradient(180deg, rgba(240, 205, 122, 0.95), rgba(223, 177, 74, 0.92));
     }
     &--green {
       color: #2e493b;
-      background: linear-gradient(180deg, rgba(202,220,203,0.95), rgba(167,190,168,0.92));
+      background: linear-gradient(180deg, rgba(202, 220, 203, 0.95), rgba(167, 190, 168, 0.92));
     }
   }
 
-  &__body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  &__body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 
   &__entry {
     display: flex;
@@ -2532,6 +2663,7 @@ git commit -m "feat(web): add class ranking board component"
 ## Task 12: Export Service
 
 **Files:**
+
 - Create: `apps/web/src/app/core/export.service.ts`
 - Test: `apps/web/src/app/core/export.service.spec.ts`
 
@@ -2540,9 +2672,9 @@ git commit -m "feat(web): add class ranking board component"
 Create `apps/web/src/app/core/export.service.spec.ts`:
 
 ```ts
-import { TestBed } from '@angular/core/testing'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { ExportService } from './export.service'
+import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { ExportService } from './export.service';
 
 // Mock html2canvas
 vi.mock('html2canvas', () => ({
@@ -2550,24 +2682,24 @@ vi.mock('html2canvas', () => ({
     toDataURL: vi.fn().mockReturnValue('data:image/png;base64,abc'),
     width: 800,
     height: 600,
-  })
-}))
+  }),
+}));
 
 describe('ExportService', () => {
-  let service: ExportService
+  let service: ExportService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({ providers: [ExportService] })
-    service = TestBed.inject(ExportService)
-  })
+    TestBed.configureTestingModule({ providers: [ExportService] });
+    service = TestBed.inject(ExportService);
+  });
 
   it('downloadPng calls html2canvas and triggers download', async () => {
-    const el = document.createElement('div')
-    const clickSpy = vi.spyOn(HTMLElement.prototype, 'click').mockImplementation(() => {})
-    await service.downloadPng(el)
-    expect(clickSpy).toHaveBeenCalled()
-  })
-})
+    const el = document.createElement('div');
+    const clickSpy = vi.spyOn(HTMLElement.prototype, 'click').mockImplementation(() => {});
+    await service.downloadPng(el);
+    expect(clickSpy).toHaveBeenCalled();
+  });
+});
 ```
 
 - [ ] **Step 2: Run test — verify it fails**
@@ -2581,40 +2713,46 @@ Expected: FAIL
 - [ ] **Step 3: Implement `export.service.ts`**
 
 ```ts
-import { Injectable } from '@angular/core'
-import { afterNextRender } from '@angular/core'
+import { Injectable } from '@angular/core';
+import { afterNextRender } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ExportService {
-
   async downloadPng(element: HTMLElement): Promise<void> {
-    await document.fonts.ready
-    const html2canvas = (await import('html2canvas')).default
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true })
-    this.triggerDownload(canvas.toDataURL('image/png'), 'honor-board.png')
+    await document.fonts.ready;
+    const html2canvas = (await import('html2canvas')).default;
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    this.triggerDownload(canvas.toDataURL('image/png'), 'honor-board.png');
   }
 
   async downloadPdf(element: HTMLElement): Promise<void> {
-    await document.fonts.ready
-    const html2canvas = (await import('html2canvas')).default
-    const { jsPDF } = await import('jspdf')
+    await document.fonts.ready;
+    const html2canvas = (await import('html2canvas')).default;
+    const { jsPDF } = await import('jspdf');
 
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true })
-    const imgData = canvas.toDataURL('image/png')
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
 
-    const orientation = canvas.width > canvas.height ? 'l' : 'p'
-    const pdf = new jsPDF({ orientation, unit: 'px', format: [canvas.width / 2, canvas.height / 2] })
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2)
-    pdf.save('honor-board.pdf')
+    const orientation = canvas.width > canvas.height ? 'l' : 'p';
+    const pdf = new jsPDF({
+      orientation,
+      unit: 'px',
+      format: [canvas.width / 2, canvas.height / 2],
+    });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+    pdf.save('honor-board.pdf');
   }
 
   async downloadHtml(element: HTMLElement): Promise<void> {
     const styles = Array.from(document.styleSheets)
-      .flatMap(sheet => {
-        try { return Array.from(sheet.cssRules).map(r => r.cssText) }
-        catch { return [] }
+      .flatMap((sheet) => {
+        try {
+          return Array.from(sheet.cssRules).map((r) => r.cssText);
+        } catch {
+          return [];
+        }
       })
-      .join('\n')
+      .join('\n');
 
     const html = `<!DOCTYPE html>
 <html lang="zh-Hant">
@@ -2624,18 +2762,18 @@ export class ExportService {
   <style>${styles}</style>
 </head>
 <body>${element.outerHTML}</body>
-</html>`
+</html>`;
 
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
-    this.triggerDownload(URL.createObjectURL(blob), 'honor-board.html')
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    this.triggerDownload(URL.createObjectURL(blob), 'honor-board.html');
   }
 
   private triggerDownload(href: string, filename: string): void {
-    const a = document.createElement('a')
-    a.href = href
-    a.download = filename
-    a.click()
-    setTimeout(() => URL.revokeObjectURL(href), 1000)
+    const a = document.createElement('a');
+    a.href = href;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(href), 1000);
   }
 }
 ```
@@ -2660,6 +2798,7 @@ git commit -m "feat(web): add export service for HTML, PDF, and PNG download"
 ## Task 13: Skills Setup + CLAUDE.md
 
 **Files:**
+
 - Create: `CLAUDE.md`
 - Create: `.claude/settings.json`
 - Copy: Skills from clessia
@@ -2679,27 +2818,28 @@ cp -r ../clessia/.claude/skills/add-icon .claude/skills/
 
 - [ ] **Step 2: Create `CLAUDE.md`**
 
-```markdown
+````markdown
 # Student Honor Board Generator
 
 榮譽榜產生器 — 補習班考後榮譽榜自動化工具
 
 ## Tech Stack
 
-| Layer    | Technology                                          |
-|----------|-----------------------------------------------------|
-| Frontend | Angular 21 (Standalone + Signals)                   |
-| UI       | PrimeNG 21 + PrimeIcons + @primeuix/themes Aura     |
-| Backend  | Hono on Cloudflare Workers                          |
-| AI       | Gemini API (@google/generative-ai)                  |
-| File     | SheetJS (xlsx) for Excel parsing                    |
+| Layer    | Technology                                              |
+| -------- | ------------------------------------------------------- |
+| Frontend | Angular 21 (Standalone + Signals)                       |
+| UI       | PrimeNG 21 + PrimeIcons + @primeuix/themes Aura         |
+| Backend  | Hono on Cloudflare Workers                              |
+| AI       | Gemini API (@google/generative-ai)                      |
+| File     | SheetJS (xlsx) for Excel parsing                        |
 | Export   | html2canvas + jsPDF (PDF/PNG), DOM serialization (HTML) |
-| Deploy   | Cloudflare Pages (web) + Cloudflare Workers (worker)|
-| Monorepo | NX                                                  |
+| Deploy   | Cloudflare Pages (web) + Cloudflare Workers (worker)    |
+| Monorepo | NX                                                      |
 
 ## Coding Conventions
 
 ### Angular
+
 - Standalone Components only — no NgModules
 - Signals for reactive state (`signal`, `computed`, `effect`)
 - `inject()` over constructor injection
@@ -2708,23 +2848,27 @@ cp -r ../clessia/.claude/skills/add-icon .claude/skills/
 - Lazy load feature components via `loadComponent`
 
 ### TypeScript
+
 - `strict: true`
 - `readonly` for all non-reassigned properties
 - Interface over type alias (except unions)
 - `import type` for type-only imports
 
 ### CSS/SCSS
+
 - BEM naming: `.block__element--modifier`
 - Design tokens in `src/styles.scss`
 - Component styles in `.component.scss`
 
 ### Naming
+
 - `ng generate` for all Angular artifacts
 - Files: `feature-name.component.ts/.html/.scss`
 
 ## Template System
 
 To add a new board template:
+
 1. Add schema + prompt to `packages/shared-types/src/templates/<name>/`
 2. Add Angular component to `apps/web/src/app/templates/<name>/`
 3. Register in `packages/shared-types/src/templates/registry.ts`
@@ -2738,12 +2882,14 @@ npm run dev:web      # Angular dev server (port 4200)
 npm run dev:worker   # Wrangler dev (port 8787)
 npm test             # Run all tests
 ```
+````
 
 ## Environment
 
 - Worker env: set `GEMINI_API_KEY` in `apps/worker/.dev.vars`
 - Web env: `apps/web/src/environments/environment.ts` (dev) / `environment.production.ts` (prod)
-```
+
+````
 
 - [ ] **Step 3: Create `.claude/settings.json`** (copy from clessia, remove unrelated settings)
 
@@ -2751,7 +2897,7 @@ npm test             # Run all tests
 {
   "model": "claude-sonnet-4-6"
 }
-```
+````
 
 - [ ] **Step 4: Commit**
 
@@ -2777,6 +2923,7 @@ npm run dev:web
 - [ ] **Step 2: Upload a test CSV and verify full flow**
 
 Prepare a CSV file:
+
 ```csv
 姓名,科目,國中,高中
 林○辰,英文,淡江國中,北一女中
@@ -2784,6 +2931,7 @@ Prepare a CSV file:
 ```
 
 Open `http://localhost:4200`:
+
 1. Select "大考成績榜"
 2. Upload the CSV
 3. Click "開始解析"
@@ -2809,6 +2957,7 @@ Repeat steps 2-9 with "班排榮譽榜" template.
 - [ ] **Step 4: Test error handling**
 
 Upload a completely unrelated CSV (e.g., product inventory data). Verify:
+
 - Gemini returns a meaningful error message
 - "重試" or "重新上傳" button is shown
 - User can upload a different file

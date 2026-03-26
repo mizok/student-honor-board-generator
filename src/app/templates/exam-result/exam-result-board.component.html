@@ -1,6 +1,5 @@
 <div class="board">
   <div class="board__inner">
-
     <!-- Header -->
     <header class="board__header">
       @if (data().tagline) {
@@ -17,13 +16,12 @@
       @for (student of data().students; track $index) {
         <div class="card" [class.card--highlight]="student.highlight">
           <div class="card__tag">{{ student.tag }}</div>
-          <div class="card__school">{{ student.juniorHighSchool }}</div>
+          <div class="card__school">{{ student.school }}</div>
           <div class="card__name">{{ mask(student.studentName) }}</div>
           <div class="card__divider"></div>
-          <div class="card__admitted">{{ student.seniorHighSchool }}</div>
+          <div class="card__description">{{ student.description }}</div>
         </div>
       }
     </div>
-
   </div>
 </div>

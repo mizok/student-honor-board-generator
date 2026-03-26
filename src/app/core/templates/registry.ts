@@ -1,34 +1,34 @@
-import { ZodSchema } from 'zod'
-import { examResultSchema } from './exam-result/schema'
-import { examResultCsvTemplate, parseExamResultCsv } from './exam-result/parseCsv'
-import { classRankingSchema } from './class-ranking/schema'
-import { classRankingCsvTemplate, parseClassRankingCsv } from './class-ranking/parseCsv'
+import { ZodSchema } from 'zod';
+import { examResultSchema } from './exam-result/schema';
+import { examResultCsvTemplate, parseExamResultCsv } from './exam-result/parseCsv';
+import { classRankingSchema } from './class-ranking/schema';
+import { classRankingCsvTemplate, parseClassRankingCsv } from './class-ranking/parseCsv';
 
 export interface TemplateColumn {
   /** Internal key used in CSV parsing */
-  readonly key: string
+  readonly key: string;
   /** Chinese label shown in the xlsx header row */
-  readonly label: string
+  readonly label: string;
   /** Short hint shown below the header */
-  readonly hint: string
+  readonly hint: string;
   /** Example value shown in the example row */
-  readonly example: string
+  readonly example: string;
 }
 
 export interface TemplateDefinition {
-  readonly id: string
-  readonly label: string
-  readonly schema: ZodSchema
+  readonly id: string;
+  readonly label: string;
+  readonly schema: ZodSchema;
   /** CSV template content for users to download and fill in */
-  readonly csvTemplate: string
+  readonly csvTemplate: string;
   /** Converts pre-split CSV rows directly into schema-compatible data (no LLM) */
-  readonly parseCsv: (rows: string[][]) => unknown
+  readonly parseCsv: (rows: string[][]) => unknown;
   /** Column definitions used to generate the xlsx template */
-  readonly columns: TemplateColumn[]
+  readonly columns: TemplateColumn[];
   /** Multiple example rows shown in the xlsx template */
-  readonly exampleRows: Record<string, string>[]
+  readonly exampleRows: Record<string, string>[];
   /** Pre-filled sample data; lets users skip file upload and start editing immediately */
-  readonly defaultData: unknown
+  readonly defaultData: unknown;
 }
 
 export const TEMPLATE_REGISTRY: Readonly<Record<string, TemplateDefinition>> = {
@@ -39,29 +39,89 @@ export const TEMPLATE_REGISTRY: Readonly<Record<string, TemplateDefinition>> = {
     csvTemplate: examResultCsvTemplate,
     parseCsv: parseExamResultCsv,
     columns: [
-      { key: 'tag',              label: '標籤',     hint: '如：英文、數學、藝術',     example: '英文' },
-      { key: 'juniorHighSchool', label: '國中名稱', hint: '學生就讀的國中',           example: '鶯歌國中' },
-      { key: 'studentName',      label: '學生姓名', hint: '學生全名',                 example: '王小明' },
-      { key: 'seniorHighSchool', label: '錄取學校', hint: '錄取的高中或大學名稱',     example: '建國高中' },
-      { key: 'highlight',        label: '金色強調', hint: '填「是」啟用金色卡片',     example: '' },
+      { key: 'tag', label: '標籤', hint: '如：英文、數學、藝術', example: '英文' },
+      { key: 'school', label: '國中名稱', hint: '學生就讀的國中', example: '鶯歌國中' },
+      { key: 'studentName', label: '學生姓名', hint: '學生全名', example: '王小明' },
+      { key: 'description', label: '描述', hint: '如：錄取學校或其他說明', example: '建國高中' },
+      { key: 'highlight', label: '金色強調', hint: '填「是」啟用金色卡片', example: '' },
     ],
     exampleRows: [
-      { tag: '英文', juniorHighSchool: '鶯歌國中', studentName: '王小明', seniorHighSchool: '建國高中', highlight: '' },
-      { tag: '數學', juniorHighSchool: '三峽國中', studentName: '李小華', seniorHighSchool: '師大附中', highlight: '是' },
+      {
+        tag: '英文',
+        school: '鶯歌國中',
+        studentName: '王小明',
+        description: '建國高中',
+        highlight: '',
+      },
+      {
+        tag: '數學',
+        school: '三峽國中',
+        studentName: '李小華',
+        description: '師大附中',
+        highlight: '是',
+      },
     ],
     defaultData: {
       title: '113學年度大考成績榜',
       subtitle: '恭賀同學金榜題名',
       tagline: '耀・煜・傳・會',
       students: [
-        { tag: '英文', juniorHighSchool: '鶯歌國中', studentName: '王小明', seniorHighSchool: '建國高中', highlight: true },
-        { tag: '英文', juniorHighSchool: '三峽國中', studentName: '李小華', seniorHighSchool: '北一女中', highlight: false },
-        { tag: '英文', juniorHighSchool: '鶯歌國中', studentName: '陳怡文', seniorHighSchool: '師大附中', highlight: false },
-        { tag: '數學', juniorHighSchool: '鶯歌國中', studentName: '張雅雯', seniorHighSchool: '中山女高', highlight: true },
-        { tag: '數學', juniorHighSchool: '三峽國中', studentName: '林志宏', seniorHighSchool: '成功高中', highlight: false },
-        { tag: '數學', juniorHighSchool: '鶯歌國中', studentName: '吳佳穎', seniorHighSchool: '景美女中', highlight: false },
-        { tag: '自然', juniorHighSchool: '三峽國中', studentName: '黃建勝', seniorHighSchool: '武陵高中', highlight: false },
-        { tag: '自然', juniorHighSchool: '鶯歌國中', studentName: '劉芳儀', seniorHighSchool: '台中一中', highlight: false },
+        {
+          tag: '英文',
+          school: '鶯歌國中',
+          studentName: '王小明',
+          description: '建國高中',
+          highlight: true,
+        },
+        {
+          tag: '英文',
+          school: '三峽國中',
+          studentName: '李小華',
+          description: '北一女中',
+          highlight: false,
+        },
+        {
+          tag: '英文',
+          school: '鶯歌國中',
+          studentName: '陳怡文',
+          description: '師大附中',
+          highlight: false,
+        },
+        {
+          tag: '數學',
+          school: '鶯歌國中',
+          studentName: '張雅雯',
+          description: '中山女高',
+          highlight: true,
+        },
+        {
+          tag: '數學',
+          school: '三峽國中',
+          studentName: '林志宏',
+          description: '成功高中',
+          highlight: false,
+        },
+        {
+          tag: '數學',
+          school: '鶯歌國中',
+          studentName: '吳佳穎',
+          description: '景美女中',
+          highlight: false,
+        },
+        {
+          tag: '自然',
+          school: '三峽國中',
+          studentName: '黃建勝',
+          description: '武陵高中',
+          highlight: false,
+        },
+        {
+          tag: '自然',
+          school: '鶯歌國中',
+          studentName: '劉芳儀',
+          description: '台中一中',
+          highlight: false,
+        },
       ],
     },
   },
@@ -72,16 +132,16 @@ export const TEMPLATE_REGISTRY: Readonly<Record<string, TemplateDefinition>> = {
     csvTemplate: classRankingCsvTemplate,
     parseCsv: parseClassRankingCsv,
     columns: [
-      { key: 'type',        label: '類型', hint: '填 school（校排）或 class（班排）', example: 'school' },
-      { key: 'rank',        label: '名次', hint: '數字，如：1、2、3',                 example: '1' },
-      { key: 'classNumber', label: '班級', hint: '班級號碼，如：805',                 example: '805' },
-      { key: 'studentName', label: '姓名', hint: '學生全名',                           example: '張耀文' },
+      { key: 'type', label: '類型', hint: '填 school（校排）或 class（班排）', example: 'school' },
+      { key: 'rank', label: '名次', hint: '數字，如：1、2、3', example: '1' },
+      { key: 'classNumber', label: '班級', hint: '班級號碼，如：805', example: '805' },
+      { key: 'studentName', label: '姓名', hint: '學生全名', example: '張耀文' },
     ],
     exampleRows: [
       { type: 'school', rank: '1', classNumber: '805', studentName: '張耀文' },
       { type: 'school', rank: '2', classNumber: '901', studentName: '陳映如' },
-      { type: 'class',  rank: '1', classNumber: '805', studentName: '李小明' },
-      { type: 'class',  rank: '2', classNumber: '901', studentName: '王大華' },
+      { type: 'class', rank: '1', classNumber: '805', studentName: '李小明' },
+      { type: 'class', rank: '2', classNumber: '901', studentName: '王大華' },
     ],
     defaultData: {
       title: '113學年度第一學期班排榮譽榜',
@@ -104,6 +164,6 @@ export const TEMPLATE_REGISTRY: Readonly<Record<string, TemplateDefinition>> = {
       ],
     },
   },
-}
+};
 
-export const TEMPLATE_IDS = Object.keys(TEMPLATE_REGISTRY) as (keyof typeof TEMPLATE_REGISTRY)[]
+export const TEMPLATE_IDS = Object.keys(TEMPLATE_REGISTRY) as (keyof typeof TEMPLATE_REGISTRY)[];

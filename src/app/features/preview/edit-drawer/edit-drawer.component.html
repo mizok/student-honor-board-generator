@@ -11,24 +11,38 @@
     <div class="drawer__section-title">基本資訊</div>
     <div class="drawer__field">
       <label class="drawer__label">榮譽榜標題</label>
-      <input pInputText [ngModel]="title()" (ngModelChange)="updateTitle($event)" class="drawer__input" />
+      <input
+        pInputText
+        [ngModel]="title()"
+        (ngModelChange)="updateTitle($event)"
+        class="drawer__input"
+      />
     </div>
     <div class="drawer__field">
       <label class="drawer__label">副標題</label>
-      <input pInputText [ngModel]="subtitle()" (ngModelChange)="updateSubtitle($event)" class="drawer__input" placeholder="（選填）" />
+      <input
+        pInputText
+        [ngModel]="subtitle()"
+        (ngModelChange)="updateSubtitle($event)"
+        class="drawer__input"
+        placeholder="（選填）"
+      />
     </div>
     @if (isExamResult()) {
       <div class="drawer__field">
         <label class="drawer__label">裝飾文字</label>
-        <input pInputText [ngModel]="tagline()" (ngModelChange)="updateTagline($event)" class="drawer__input" placeholder="如：耀・煜・傳・會" />
+        <input
+          pInputText
+          [ngModel]="tagline()"
+          (ngModelChange)="updateTagline($event)"
+          class="drawer__input"
+          placeholder="如：耀・煜・傳・會"
+        />
       </div>
     }
     <div class="drawer__field drawer__field--row">
       <label class="drawer__label">遮蔽姓名</label>
-      <p-toggleswitch
-        [ngModel]="board.maskNames()"
-        (ngModelChange)="board.maskNames.set($event)"
-      />
+      <p-toggleswitch [ngModel]="board.maskNames()" (ngModelChange)="board.maskNames.set($event)" />
     </div>
     <div class="drawer__field">
       <label class="drawer__label">欄數</label>
@@ -79,7 +93,13 @@
 
   <!-- Class Ranking mode -->
   @if (isClassRanking() && rankingData(); as data) {
-    @for (section of [{ key: 'schoolRankings', label: '校排榮譽' }, { key: 'classRankings', label: '班排榮譽' }]; track section.key) {
+    @for (
+      section of [
+        { key: 'schoolRankings', label: '校排榮譽' },
+        { key: 'classRankings', label: '班排榮譽' },
+      ];
+      track section.key
+    ) {
       <div class="drawer__section">
         <div class="drawer__section-title">{{ section.label }}</div>
         @for (entry of $any(data)[section.key]; track $index) {
@@ -129,19 +149,39 @@
     <div class="edit-dialog__fields">
       <div class="edit-dialog__field">
         <label class="edit-dialog__label">姓名</label>
-        <input pInputText [ngModel]="editBuffer()['studentName']" (ngModelChange)="updateBuffer('studentName', $event)" class="edit-dialog__input" />
+        <input
+          pInputText
+          [ngModel]="editBuffer()['studentName']"
+          (ngModelChange)="updateBuffer('studentName', $event)"
+          class="edit-dialog__input"
+        />
       </div>
       <div class="edit-dialog__field">
         <label class="edit-dialog__label">標籤</label>
-        <input pInputText [ngModel]="editBuffer()['tag']" (ngModelChange)="updateBuffer('tag', $event)" class="edit-dialog__input" />
+        <input
+          pInputText
+          [ngModel]="editBuffer()['tag']"
+          (ngModelChange)="updateBuffer('tag', $event)"
+          class="edit-dialog__input"
+        />
       </div>
       <div class="edit-dialog__field">
         <label class="edit-dialog__label">國中</label>
-        <input pInputText [ngModel]="editBuffer()['juniorHighSchool']" (ngModelChange)="updateBuffer('juniorHighSchool', $event)" class="edit-dialog__input" />
+        <input
+          pInputText
+          [ngModel]="editBuffer()['school']"
+          (ngModelChange)="updateBuffer('school', $event)"
+          class="edit-dialog__input"
+        />
       </div>
       <div class="edit-dialog__field">
-        <label class="edit-dialog__label">錄取學校</label>
-        <input pInputText [ngModel]="editBuffer()['seniorHighSchool']" (ngModelChange)="updateBuffer('seniorHighSchool', $event)" class="edit-dialog__input" />
+        <label class="edit-dialog__label">描述</label>
+        <input
+          pInputText
+          [ngModel]="editBuffer()['description']"
+          (ngModelChange)="updateBuffer('description', $event)"
+          class="edit-dialog__input"
+        />
       </div>
       <div class="edit-dialog__field edit-dialog__field--row">
         <label class="edit-dialog__label">金色強調</label>
@@ -158,15 +198,31 @@
     <div class="edit-dialog__fields">
       <div class="edit-dialog__field">
         <label class="edit-dialog__label">名次</label>
-        <input pInputText type="number" [ngModel]="editBuffer()['rank']" (ngModelChange)="updateBuffer('rank', $event)" class="edit-dialog__input" />
+        <input
+          pInputText
+          type="number"
+          [ngModel]="editBuffer()['rank']"
+          (ngModelChange)="updateBuffer('rank', $event)"
+          class="edit-dialog__input"
+        />
       </div>
       <div class="edit-dialog__field">
         <label class="edit-dialog__label">班級</label>
-        <input pInputText [ngModel]="editBuffer()['classNumber']" (ngModelChange)="updateBuffer('classNumber', $event)" class="edit-dialog__input" />
+        <input
+          pInputText
+          [ngModel]="editBuffer()['classNumber']"
+          (ngModelChange)="updateBuffer('classNumber', $event)"
+          class="edit-dialog__input"
+        />
       </div>
       <div class="edit-dialog__field">
         <label class="edit-dialog__label">姓名</label>
-        <input pInputText [ngModel]="editBuffer()['studentName']" (ngModelChange)="updateBuffer('studentName', $event)" class="edit-dialog__input" />
+        <input
+          pInputText
+          [ngModel]="editBuffer()['studentName']"
+          (ngModelChange)="updateBuffer('studentName', $event)"
+          class="edit-dialog__input"
+        />
       </div>
     </div>
   }

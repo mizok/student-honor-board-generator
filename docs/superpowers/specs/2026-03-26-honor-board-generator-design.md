@@ -17,11 +17,13 @@ Two board types supported at launch, with an extensible template system for futu
 ## Board Types
 
 ### 1. 大考成績榜 (Exam Results Board)
+
 Used after major external exams (e.g. 學測). Shows students by subject, with their junior high school and admitted senior high school.
 
-Data per entry: `subject` + `juniorHighSchool` + `studentName` + `seniorHighSchool`
+Data per entry: `subject` + `school` + `studentName` + `seniorHighSchool`
 
 ### 2. 班排榮譽榜 (Class Ranking Board)
+
 Used after internal cram school tests. Shows school-wide rankings and per-class rankings.
 
 Data per entry: `rank` + `classNumber` + `studentName`
@@ -44,6 +46,7 @@ student-honor-board-generator/
 ```
 
 ### Deployment
+
 - **Frontend:** Cloudflare Pages
 - **Backend:** Cloudflare Workers (Hono)
 - **Gemini API key:** stored in Worker environment variables, never exposed to frontend
@@ -56,6 +59,7 @@ student-honor-board-generator/
 Each template is a self-contained unit. Adding a new template requires no changes to existing code.
 
 ### Shared package structure (`packages/shared-types/templates/`)
+
 ```
 registry.ts          ← master list of all templates
 exam-result/
@@ -67,6 +71,7 @@ class-ranking/
 ```
 
 ### Registry shape (`registry.ts`)
+
 ```ts
 export interface TemplateDefinition {
   id: string
@@ -84,6 +89,7 @@ export const TEMPLATE_REGISTRY: Record<string, TemplateDefinition> = {
 The frontend imports `TEMPLATE_REGISTRY` to populate the `p-select` dropdown. The Worker imports it to look up the correct schema and prompt by `templateId`.
 
 ### Frontend structure (`apps/web/src/templates/`)
+
 ```
 exam-result/
   component.ts       ← Angular component that renders the board
@@ -92,6 +98,7 @@ class-ranking/
 ```
 
 ### Adding a new template (checklist)
+
 1. Add `schema.ts` + `prompt.ts` in `packages/shared-types/templates/<name>/`
 2. Add `component.ts` in `apps/web/src/templates/<name>/`
 3. Register in `packages/shared-types/templates/registry.ts`
@@ -145,6 +152,7 @@ class-ranking/
 ### POST `/api/parse`
 
 **Request:**
+
 ```ts
 {
   templateId: string,   // e.g. "exam-result" | "class-ranking"
@@ -156,6 +164,7 @@ class-ranking/
 **File size limit:** 5 MB enforced on both frontend (before upload) and Worker (guard at request entry).
 
 **Response (success):**
+
 ```ts
 {
   success: true,
@@ -164,6 +173,7 @@ class-ranking/
 ```
 
 **Response (failure — any of three modes):**
+
 ```ts
 {
   success: false,
@@ -172,6 +182,7 @@ class-ranking/
 ```
 
 Failure modes:
+
 1. **Gemini returns explanation text instead of JSON** — Worker detects non-JSON response, wraps as `message`
 2. **Zod validation fails** — Worker formats Zod error into a plain-language `message`
 3. **Gemini API HTTP error** — Worker catches and returns a generic `message`
@@ -181,6 +192,7 @@ Failure modes:
 ## Frontend UI
 
 ### Tech Stack
+
 - Angular 21 + Signals
 - PrimeNG 21 (components: `p-fileUpload`, `p-drawer`, `p-select`, `p-toast`)
 - RxJS
@@ -197,6 +209,7 @@ PREVIEW state → (drawer toggle) → PREVIEW state with drawer open
 ```
 
 **UPLOAD state**
+
 - `p-select` dropdown to choose template type
 - Large drag-and-drop upload area (`p-fileUpload`), accepts `.csv`, `.xlsx`, `.xls`
 - Frontend validates: file type and file size ≤ 5 MB before sending
@@ -204,12 +217,14 @@ PREVIEW state → (drawer toggle) → PREVIEW state with drawer open
 - If API returns failure: show error message inline + "重試" button
 
 **PREVIEW state**
+
 - Honor board renders full-width, exactly as it will be exported
 - Thin top toolbar:
   - Left: "← 重新上傳" button (returns to UPLOAD state)
   - Right: "✏️ 編輯" button + "下載 ▾" dropdown (HTML / PDF / PNG)
 
 **Edit Drawer (overlays PREVIEW state)**
+
 - `p-drawer` slides in from right
 - When drawer opens, the main preview area shrinks horizontally (CSS grid: `preview | drawer` side by side), so the preview remains visible
 - When drawer closes, preview returns to full width
@@ -228,15 +243,16 @@ PREVIEW state → (drawer toggle) → PREVIEW state with drawer open
 
 All exports are client-side (no additional API calls).
 
-| Format | Library | Notes |
-|--------|---------|-------|
-| HTML | Native DOM serialization | Inline CSS only. Warning tooltip on button: "下載的 HTML 檔案不含字型，在不同裝置上字型可能顯示不同" |
-| PDF | `html2canvas` + `jsPDF` | Rasterized image embedded in PDF. Fonts preserved visually. Text not selectable. |
-| PNG | `html2canvas` | `scale: 2` for 2x high-DPI output. Fonts preserved visually. |
+| Format | Library                  | Notes                                                                                                |
+| ------ | ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| HTML   | Native DOM serialization | Inline CSS only. Warning tooltip on button: "下載的 HTML 檔案不含字型，在不同裝置上字型可能顯示不同" |
+| PDF    | `html2canvas` + `jsPDF`  | Rasterized image embedded in PDF. Fonts preserved visually. Text not selectable.                     |
+| PNG    | `html2canvas`            | `scale: 2` for 2x high-DPI output. Fonts preserved visually.                                         |
 
 Note: `html2pdf.js` is not used because it is unmaintained. `html2canvas` + `jsPDF` are used directly instead.
 
 **Font handling:**
+
 - Google Fonts load normally in the browser → captured correctly in PDF and PNG exports
 - HTML export does NOT embed fonts. Warning shown as tooltip on the HTML download button.
 - Before any canvas capture: `await document.fonts.ready` called inside `afterNextRender()` to ensure Angular has finished rendering and fonts are fully loaded before `html2canvas` runs
@@ -245,15 +261,16 @@ Note: `html2pdf.js` is not used because it is unmaintained. `html2canvas` + `jsP
 
 ## Error Handling
 
-| Scenario | Handling |
-|----------|----------|
-| File type not supported | Frontend rejects before upload, shows inline message |
-| File size > 5 MB | Frontend rejects before upload (measured as original file size before base64 encoding), shows inline message |
-| Gemini cannot map data to schema | Worker returns `{ success: false, message }`, shown with "重新上傳" button (same file will likely fail again) |
-| Gemini API HTTP error / network error | Worker returns `{ success: false, message }`, shown with "重試" button (transient error, retry same file) |
-| Export failure | `p-toast` error notification |
+| Scenario                              | Handling                                                                                                      |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| File type not supported               | Frontend rejects before upload, shows inline message                                                          |
+| File size > 5 MB                      | Frontend rejects before upload (measured as original file size before base64 encoding), shows inline message  |
+| Gemini cannot map data to schema      | Worker returns `{ success: false, message }`, shown with "重新上傳" button (same file will likely fail again) |
+| Gemini API HTTP error / network error | Worker returns `{ success: false, message }`, shown with "重試" button (transient error, retry same file)     |
+| Export failure                        | `p-toast` error notification                                                                                  |
 
 **File size limit implementation detail:**
+
 - Frontend validates against original file size (what the user sees in Finder) — limit is 5 MB
 - Worker guard accepts up to 6.7 MB of request body (5 MB × 1.33 base64 expansion factor)
 
