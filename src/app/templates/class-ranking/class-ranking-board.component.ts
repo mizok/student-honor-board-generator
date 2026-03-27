@@ -16,6 +16,10 @@ export class ClassRankingBoardComponent {
   readonly maskNames = input<boolean>(false);
   readonly styleVars = input<Record<string, string | number>>({});
 
+  protected hasText(value: string | null | undefined): boolean {
+    return value?.trim().length ? true : false;
+  }
+
   protected mask(name: string): string {
     if (!this.maskNames()) return name;
     if (name.length <= 1) return name;

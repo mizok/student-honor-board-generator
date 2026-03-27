@@ -20,4 +20,14 @@ describe('ExamResultBoardComponent style variables', () => {
     expect(scss).toContain('--template-primary-start')
     expect(scss).toContain('--template-card-divider')
   })
+
+  it('does not render optional editable text blocks when their content is empty', () => {
+    const html = readFileSync(resolve(__dirname, './exam-result-board.component.html'), 'utf8')
+    const ts = readFileSync(resolve(__dirname, './exam-result-board.component.ts'), 'utf8')
+
+    expect(ts).toContain('protected hasText(value: string | null | undefined): boolean')
+    expect(html).toContain('@if (hasText(student.tag))')
+    expect(html).toContain('@if (hasText(student.school))')
+    expect(html).toContain('@if (hasText(student.description))')
+  })
 })

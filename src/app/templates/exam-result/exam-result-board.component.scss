@@ -55,6 +55,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: rw(4px);
   transition:
     box-shadow 0.15s,
@@ -89,7 +90,12 @@
     }
 
     .card__divider {
-      background: linear-gradient(90deg, transparent, var(--template-primary-end, rgba(171, 120, 30, 0.7)), transparent);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        var(--template-primary-end, rgba(171, 120, 30, 0.7)),
+        transparent
+      );
     }
   }
 
@@ -124,7 +130,12 @@
   &__divider {
     width: rw(24px);
     height: rw(1px);
-    background: linear-gradient(90deg, transparent, var(--template-card-divider, rgba(171, 132, 73, 0.55)), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--template-card-divider, rgba(171, 132, 73, 0.55)),
+      transparent
+    );
     margin: rw(4px) auto;
   }
 

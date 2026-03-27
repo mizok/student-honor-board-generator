@@ -19,6 +19,10 @@ export class ExamResultBoardComponent {
     'grid-template-columns': `repeat(${this.columns()}, 1fr)`,
   }));
 
+  protected hasText(value: string | null | undefined): boolean {
+    return value?.trim().length ? true : false;
+  }
+
   protected mask(name: string): string {
     if (!this.maskNames()) return name;
     if (name.length <= 1) return name;

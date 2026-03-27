@@ -2,11 +2,13 @@
   <div class="board__inner">
     <!-- Header -->
     <header class="board__header">
-      @if (data().tagline) {
+      @if (hasText(data().tagline)) {
         <div class="board__header-bracket">[ {{ data().tagline }} ]</div>
       }
-      <h1 class="board__title">{{ data().title }}</h1>
-      @if (data().subtitle) {
+      @if (hasText(data().title)) {
+        <h1 class="board__title">{{ data().title }}</h1>
+      }
+      @if (hasText(data().subtitle)) {
         <p class="board__subtitle">{{ data().subtitle }}</p>
       }
     </header>
@@ -15,11 +17,19 @@
     <div class="board__grid" [ngStyle]="gridStyle()">
       @for (student of data().students; track $index) {
         <div class="card" [class.card--highlight]="student.highlight">
-          <div class="card__tag">{{ student.tag }}</div>
-          <div class="card__school">{{ student.school }}</div>
-          <div class="card__name">{{ mask(student.studentName) }}</div>
-          <div class="card__divider"></div>
-          <div class="card__description">{{ student.description }}</div>
+          @if (hasText(student.tag)) {
+            <div class="card__tag">{{ student.tag }}</div>
+          }
+          @if (hasText(student.school)) {
+            <div class="card__school">{{ student.school }}</div>
+          }
+          @if (hasText(student.studentName)) {
+            <div class="card__name">{{ mask(student.studentName) }}</div>
+          }
+          @if (hasText(student.description)) {
+            <div class="card__divider"></div>
+            <div class="card__description">{{ student.description }}</div>
+          }
         </div>
       }
     </div>

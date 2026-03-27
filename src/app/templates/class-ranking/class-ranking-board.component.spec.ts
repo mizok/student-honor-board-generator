@@ -36,4 +36,14 @@ describe('ClassRankingBoardComponent badge styles', () => {
     expect(scss).toContain('--template-secondary-start')
     expect(scss).toContain('--template-pill-start')
   })
+
+  it('does not render optional editable text blocks when their content is empty', () => {
+    const html = readFileSync(resolve(__dirname, './class-ranking-board.component.html'), 'utf8')
+    const ts = readFileSync(resolve(__dirname, './class-ranking-board.component.ts'), 'utf8')
+
+    expect(ts).toContain('protected hasText(value: string | null | undefined): boolean')
+    expect(html).toContain('@if (hasText(data().subtitle))')
+    expect(html).toContain('@if (hasText(entry.classNumber))')
+    expect(html).toContain('@if (hasText(data().title))')
+  })
 })

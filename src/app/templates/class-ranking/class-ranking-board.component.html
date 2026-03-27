@@ -3,10 +3,12 @@
 
     <!-- Hero header -->
     <header class="board__hero">
-      @if (data().subtitle) {
+      @if (hasText(data().subtitle)) {
         <p class="board__eyebrow">{{ data().subtitle }}</p>
       }
-      <h1 class="board__title">{{ data().title }}</h1>
+      @if (hasText(data().title)) {
+        <h1 class="board__title">{{ data().title }}</h1>
+      }
     </header>
 
     <!-- School rankings section -->
@@ -25,8 +27,12 @@
               <div class="card__body">
                 @for (entry of schoolByRank().get(rank)!; track $index) {
                   <div class="card__entry">
-                    <span class="card__class">{{ entry.classNumber }}</span>
-                    <span class="card__name">{{ mask(entry.studentName) }}</span>
+                    @if (hasText(entry.classNumber)) {
+                      <span class="card__class">{{ entry.classNumber }}</span>
+                    }
+                    @if (hasText(entry.studentName)) {
+                      <span class="card__name">{{ mask(entry.studentName) }}</span>
+                    }
                   </div>
                 }
               </div>
@@ -52,8 +58,12 @@
               <div class="card__body">
                 @for (entry of classByRank().get(rank)!; track $index) {
                   <div class="card__entry">
-                    <span class="card__class">{{ entry.classNumber }}</span>
-                    <span class="card__name">{{ mask(entry.studentName) }}</span>
+                    @if (hasText(entry.classNumber)) {
+                      <span class="card__class">{{ entry.classNumber }}</span>
+                    }
+                    @if (hasText(entry.studentName)) {
+                      <span class="card__name">{{ mask(entry.studentName) }}</span>
+                    }
                   </div>
                 }
               </div>
@@ -63,6 +73,8 @@
       </section>
     }
 
-    <footer class="board__footer">{{ data().title }}</footer>
+    @if (hasText(data().title)) {
+      <footer class="board__footer">{{ data().title }}</footer>
+    }
   </div>
 </div>
